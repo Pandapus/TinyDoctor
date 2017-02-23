@@ -22,11 +22,21 @@ protected:
 
 public:
 	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float health = 5.f;
 
+	float maxHealth;
+
 	UFUNCTION(BlueprintCallable)
-	static void ReduceHealth(AUnit* unit,float amount);
+		static float GetHealth(AUnit* unit);
+
+	UFUNCTION(BlueprintCallable)
+		static float GetHealthInPercent(AUnit* unit);
+
+	UFUNCTION(BlueprintCallable)
+		static void ReduceHealth(AUnit* unit,float amount);
+
+	virtual void ReduceHealth(float amount);
 	
 	
 };

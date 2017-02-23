@@ -4,11 +4,11 @@
 
 #include "Projectile.h"
 
-#include "GameFramework/Character.h"
+#include "Unit.h"
 #include "PlayerCharacter.generated.h"
 
 UCLASS()
-class TINYDOCTORTEST_API APlayerCharacter : public ACharacter
+class TINYDOCTORTEST_API APlayerCharacter : public AUnit
 {
 	GENERATED_BODY()
 
@@ -30,4 +30,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class AProjectile> projectile;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int ammo = 5;
 };

@@ -2,6 +2,7 @@
 
 #pragma once
 
+// Includes the "AAmoeba"-class
 #include "Amoeba.h"
 
 #include "AIController.h"
@@ -24,6 +25,7 @@ private:
 	// Holds reference to the player-actor. This is used to calculate the objects distance to the enemy.
 	AActor* playerReference;
 
+	// Reference to the Ameoba-character that the controller is controlling.
 	AAmoeba* characterReference;
 
 	// Contains the spawn-location of the object. This allows it to return after chasing the player.

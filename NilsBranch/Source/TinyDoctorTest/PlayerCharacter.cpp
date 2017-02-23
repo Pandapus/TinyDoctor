@@ -34,10 +34,16 @@ void APlayerCharacter::MoveY(float value)
 
 void APlayerCharacter::Shoot()
 {
-	const float SpawnOffset = 100.0f;
+	if (ammo > 0)
+	{
+		const float SpawnOffset = 100.0f;
 
-	FVector direction = GetActorForwardVector();
-	FVector position = GetActorLocation() + (direction * SpawnOffset);
+		FVector direction = GetActorForwardVector();
+		FVector position = GetActorLocation() + (direction * SpawnOffset);
 
-	AProjectile* actorReference = GetWorld()->SpawnActor<AProjectile>(projectile, position, direction.Rotation());
+		AProjectile* actorReference = GetWorld()->SpawnActor<AProjectile>(projectile, position, direction.Rotation());
+
+		health--;
+		ammo--;
+	}
 }
