@@ -1,3 +1,0 @@
-# TinyDoctor
-
-Description TBA.
