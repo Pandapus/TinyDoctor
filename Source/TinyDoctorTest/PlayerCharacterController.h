@@ -15,15 +15,14 @@ class TINYDOCTORTEST_API APlayerCharacterController : public APlayerController
 {
 	GENERATED_BODY()
 
-	virtual void SetupInputComponent() override;
-	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
-	
-public:
-		
+protected:
 	APlayerCharacterController();
 
 private:
+
+	virtual void SetupInputComponent() override;
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 
 	APlayerCharacter* playerReference;
 

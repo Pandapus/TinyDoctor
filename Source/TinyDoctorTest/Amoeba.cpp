@@ -14,6 +14,8 @@ AAmoeba::AAmoeba()
 void AAmoeba::BeginPlay()
 {
 	Super::BeginPlay();
+
+	delayed = false;
 }
 
 void AAmoeba::Tick(float DeltaTime)

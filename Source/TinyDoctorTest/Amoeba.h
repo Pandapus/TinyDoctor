@@ -12,11 +12,11 @@ UCLASS()
 class TINYDOCTORTEST_API AAmoeba : public AUnit
 {
 	GENERATED_BODY()
-
-public:
+	
+protected:
+	// Constructor
 	AAmoeba();
 
-protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	// Called every frame
@@ -32,6 +32,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		float patrolRadius = 750.f;
+
+	UPROPERTY(BlueprintReadWrite)
+		bool delayed;
 
 	
 };

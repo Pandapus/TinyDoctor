@@ -12,18 +12,17 @@ class TINYDOCTORTEST_API APlayerCharacter : public AUnit
 {
 	GENERATED_BODY()
 
-public:
+protected:
 	// Sets default values for this character's properties
 	APlayerCharacter();
 
-protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-public:	
 	// Called every frames
 	virtual void Tick(float DeltaTime) override;
 
+public:	
+	
 	void MoveX(float value);
 	void MoveY(float value);
 	void Shoot();
@@ -31,6 +30,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class AProjectile> projectile;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int ammo = 5;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+		int ammo = 40;
+
+	UPROPERTY(BlueprintReadOnly)
+		int maxAmmo;
 };

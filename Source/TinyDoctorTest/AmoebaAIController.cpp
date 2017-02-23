@@ -21,7 +21,8 @@ void AAmoebaAIController::BeginPlay()
 
 void AAmoebaAIController::Tick(float DeltaTime)
 {
-	AI();
+	if (characterReference->delayed == false)
+		AI();
 }
 
 void AAmoebaAIController::AI()
