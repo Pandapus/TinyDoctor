@@ -20,7 +20,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:
+public:	
 	// Called every frames
 	virtual void Tick(float DeltaTime) override;
 
@@ -30,7 +30,4 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class AProjectile> projectile;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
-		float Health;
 };

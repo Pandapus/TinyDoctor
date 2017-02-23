@@ -8,9 +8,6 @@ APlayerCharacter::APlayerCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	Health = 1.0f;
-	FMath::Clamp(Health, 0.f, 1.f);
 }
 
 // Called when the game starts or when spawned
@@ -43,6 +40,4 @@ void APlayerCharacter::Shoot()
 	FVector position = GetActorLocation() + (direction * SpawnOffset);
 
 	AProjectile* actorReference = GetWorld()->SpawnActor<AProjectile>(projectile, position, direction.Rotation());
-
-	Health -= 0.1f;
 }
