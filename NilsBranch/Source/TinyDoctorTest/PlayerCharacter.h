@@ -4,11 +4,11 @@
 
 #include "Projectile.h"
 
-#include "GameFramework/Character.h"
+#include "Unit.h"
 #include "PlayerCharacter.generated.h"
 
 UCLASS()
-class TINYDOCTORTEST_API APlayerCharacter : public ACharacter
+class TINYDOCTORTEST_API APlayerCharacter : public AUnit
 {
 	GENERATED_BODY()
 
@@ -20,7 +20,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:
+public:	
 	// Called every frames
 	virtual void Tick(float DeltaTime) override;
 
@@ -31,6 +31,6 @@ public:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class AProjectile> projectile;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
-		float Health;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int ammo = 5;
 };
