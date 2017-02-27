@@ -26,9 +26,21 @@ private:
 
 	APlayerCharacter* playerReference;
 
-	void MoveX(float value);
-	void MoveY(float value);
+	void MoveForward(float value);
+	void MoveRight(float value);
 	void Shoot();
 
+	// Gamepad aiming
+	bool bUsingGamepad = false;
+	FVector gamepadAimDirection = FVector::ZeroVector;
+	float gamepadActivateThreshold = 0.25f;
+	void GamepadAimForward(float value);
+	void GamepadAimRight(float value);
+	void OrientTowardsGamepadAnalog();
+
+	// Cursor-oriented aiming
+	FVector previousMousePosition = FVector::ZeroVector;
+	bool CheckForMouseMovement();
 	void OrientTowardsCursor();
+	
 };
