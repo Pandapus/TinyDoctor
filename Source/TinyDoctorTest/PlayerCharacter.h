@@ -7,11 +7,14 @@
 #include "Unit.h"
 #include "PlayerCharacter.generated.h"
 
+/**
+ * 
+ */
 UCLASS()
 class TINYDOCTORTEST_API APlayerCharacter : public AUnit
 {
 	GENERATED_BODY()
-
+	
 protected:
 	// Sets default values for this character's properties
 	APlayerCharacter();
@@ -21,10 +24,16 @@ protected:
 	// Called every frames
 	virtual void Tick(float DeltaTime) override;
 
-public:	
-	
-	void MoveX(float value);
-	void MoveY(float value);
+public:
+
+	UPROPERTY(EditAnywhere)
+		USpringArmComponent* springArm;
+
+	UPROPERTY(EditAnywhere)
+		UCameraComponent* camera;
+
+	void MoveForward(float value);
+	void MoveRight(float value);
 	void Shoot();
 
 	UPROPERTY(EditAnywhere)
@@ -35,4 +44,6 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 		int maxAmmo;
+	
+	
 };

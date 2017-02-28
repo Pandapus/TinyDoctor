@@ -9,6 +9,8 @@ AAmoeba::AAmoeba()
 	PrimaryActorTick.bCanEverTick = true;
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+
+	bUseControllerRotationYaw = false;
 }
 
 void AAmoeba::BeginPlay()
