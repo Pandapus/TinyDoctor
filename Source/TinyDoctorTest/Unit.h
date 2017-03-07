@@ -10,11 +10,10 @@ class TINYDOCTORTEST_API AUnit : public ACharacter
 {
 	GENERATED_BODY()
 
-public:
+protected:
 	// Sets default values for this character's properties
 	AUnit();
 
-protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	// Called every frame
@@ -22,19 +21,11 @@ protected:
 
 public:
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float health = 5.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+		float health = 3.f;
 
-	float maxHealth;
-
-	UFUNCTION(BlueprintCallable)
-		static float GetHealth(AUnit* unit);
-
-	UFUNCTION(BlueprintCallable)
-		static float GetHealthInPercent(AUnit* unit);
-
-	UFUNCTION(BlueprintCallable)
-		static void ReduceHealth(AUnit* unit,float amount);
+	UPROPERTY(BlueprintReadOnly)
+		float maxHealth;
 
 	virtual void ReduceHealth(float amount);
 	

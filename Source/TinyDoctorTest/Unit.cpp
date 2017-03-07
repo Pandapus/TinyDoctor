@@ -18,7 +18,6 @@ void AUnit::BeginPlay()
 	Super::BeginPlay();
 
 	maxHealth = health;
-	
 }
 
 // Called every frame
@@ -27,29 +26,11 @@ void AUnit::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-float AUnit::GetHealth(AUnit* unit)
-{
-	return unit->health;
-}
-
-float AUnit::GetHealthInPercent(AUnit* unit)
-{
-	return unit->health / unit->maxHealth;
-}
-
-void AUnit::ReduceHealth(AUnit* unit, float amount)
-{
-	unit->health -= amount;
-
-	// If the unit is has too little health, kill it (with fire)
-	if (unit->health <= 0.f)
-		unit->Destroy();
-}
-
 void AUnit::ReduceHealth(float amount)
 {
 	health -= amount;
 
+	// If the unit is has too little health, kill it (with fire)
 	if (health <= 0.f)
 		Destroy();
 }

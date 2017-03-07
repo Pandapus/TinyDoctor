@@ -50,5 +50,4 @@ private:
 	void AIRoam();
 	void ChaseMode();
 	void ReturnMode();
-	
 };
