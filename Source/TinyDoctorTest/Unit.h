@@ -27,7 +27,7 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 		float maxHealth;
 
-	virtual void ReduceHealth(float amount);
-	
+	UFUNCTION(BlueprintCallable)
+		virtual void ReduceHealth(float amount, AActor* damageCauser, float horizontalKnockback, float verticalKnockback);
 	
 };

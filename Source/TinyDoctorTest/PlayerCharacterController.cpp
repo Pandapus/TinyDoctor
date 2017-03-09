@@ -33,7 +33,11 @@ void APlayerCharacterController::BeginPlay()
 void APlayerCharacterController::Tick(float DeltaTime)
 {
 	if (bUsingGamepad && CheckForMouseMovement())
+	{
 		bUsingGamepad = false;
+		bShowMouseCursor = true;
+	}
+		
 	
 	if (!bUsingGamepad)
 		OrientTowardsCursor();
@@ -53,8 +57,11 @@ void APlayerCharacterController::MoveRight(float value)
 
 void APlayerCharacterController::Shoot()
 {
-	// Runs Shoot-method on the possessed Character.
-	playerReference->Shoot();
+	if (!GetWorldTimerManager().IsTimerActive(shootCooldownTimerHandle))
+	{
+		playerReference->Shoot();
+		GetWorldTimerManager().SetTimer(shootCooldownTimerHandle, playerReference->weaponCooldown, false);
+	}
 }
 
 bool APlayerCharacterController::CheckForMouseMovement()
@@ -81,7 +88,7 @@ void APlayerCharacterController::OrientTowardsCursor()
 		// Finds the angle between the camera and the hitPoint.
 		float heightDifferenceBetweenPointAndCamera = playerReference->camera->GetComponentLocation().Z - Hit.ImpactPoint.Z;
 		float lengthDifference = Hit.ImpactPoint.X - playerReference->camera->GetComponentLocation().X;
-		float angleY = FMath::Atan(heightDifferenceBetweenPointAndCamera / lengthDifference) / PI * 180.f;
+		float angleY = FMath::RadiansToDegrees(FMath::Atan(heightDifferenceBetweenPointAndCamera / lengthDifference));
 
 		float heightDifference = Hit.ImpactPoint.Z - playerReference->GetActorLocation().Z;
 
@@ -106,6 +113,7 @@ void APlayerCharacterController::GamepadAimForward(float value)
 		{
 			bUsingGamepad = true;
 			GetMousePosition(previousMousePosition.X, previousMousePosition.Y);
+			bShowMouseCursor = false;
 		}
 	}
 }
@@ -121,11 +129,14 @@ void APlayerCharacterController::GamepadAimRight(float value)
 		{
 			bUsingGamepad = true;
 			GetMousePosition(previousMousePosition.X, previousMousePosition.Y);
+			bShowMouseCursor = false;
 		}
 	}
 }
 
 void APlayerCharacterController::OrientTowardsGamepadAnalog()
 {
-	ControlRotation.Yaw = gamepadAimDirection.Rotation().Yaw + 90.f + playerReference->springArm->GetComponentRotation().Yaw;
+	const float gamepadDeadzone = 0.5f;
+	if (gamepadAimDirection.Size() >= gamepadDeadzone)
+		ControlRotation.Yaw = gamepadAimDirection.Rotation().Yaw + 90.f + playerReference->springArm->GetComponentRotation().Yaw;
 }

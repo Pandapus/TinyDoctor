@@ -28,26 +28,37 @@ private:
 	// Reference to the Ameoba-character that the controller is controlling.
 	AAmoeba* characterReference;
 
-	// Contains the spawn-location of the object. This allows it to return after chasing the player.
-	FVector originalPosition;
+	// Original MaxWalkSpeed of the character being controlled
+	float walkSpeed;
 
+	// Calculates distance from enemy to player
+	float DistanceToPlayer();
+
+
+	//
+	// Methods that control the AI
+	//
 	enum class AIMode {
 		Patrol,
-		Chase,
-		Return
+		Chase
 	};
 
-	AIMode aiMode = AIMode::Patrol;
-
-	bool bRoamingMovingToLocation;
-	FVector targetPosition = FVector::ZeroVector;
-
-	// Original MaxWalkSpeed of the character being controlled
-	float originalWalkSpeed;
-
+	AIMode aiMode;
 	void AI();
+
+	FTimerHandle delayTimerHandle;
+
+	// Patrol Mode
+	FVector originalPosition;
+	FVector targetPosition = FVector::ZeroVector;
+	void StartPatrolMode();
 	void PatrolMode();
-	void AIRoam();
+	void Roaming();
+	void PickNewRoamingTargetAndMoveThere();
+
+	// Chase Mode
 	void ChaseMode();
-	void ReturnMode();
+public:
+	void StartChaseMode();
+	void MoveToPlayer();
 };

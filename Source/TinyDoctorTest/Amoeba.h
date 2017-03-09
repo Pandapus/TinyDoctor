@@ -24,17 +24,23 @@ protected:
 
 public:
 	
-	UPROPERTY(EditAnywhere, Category = "Stats")
-		float slowWalkSpeed = 200.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats")
+		float runSpeed = 200.f;
 
-	UPROPERTY(EditAnywhere, Category = "AI")
-		float detectionRange = 1500.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
+		float detectionRadius = 1500.f;
 
-	UPROPERTY(EditAnywhere, Category = "AI")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
+		float hearingRadius = 500.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
+		float fieldOfView = 90.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 		float patrolRadius = 750.f;
 
 	UPROPERTY(BlueprintReadWrite)
 		bool delayed;
 
-	
+	virtual void ReduceHealth(float amount, AActor* damageCauser, float horizontalKnockback, float verticalKnockback) override;
 };

@@ -26,9 +26,13 @@ private:
 
 	APlayerCharacter* playerReference;
 
+	// Movement
 	void MoveForward(float value);
 	void MoveRight(float value);
+
+	// Shooting
 	void Shoot();
+	FTimerHandle shootCooldownTimerHandle;
 
 	// Gamepad aiming
 	bool bUsingGamepad = false;

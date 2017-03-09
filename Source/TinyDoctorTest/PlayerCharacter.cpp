@@ -3,16 +3,13 @@
 #include "TinyDoctorTest.h"
 #include "PlayerCharacter.h"
 
+#include "Projectile.h"
+
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	springArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-	springArm->SetupAttachment(RootComponent);
-	camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	camera->SetupAttachment(springArm, USpringArmComponent::SocketName);
 
 	bUseControllerRotationYaw = false;
 
@@ -23,6 +20,10 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// Finds components on the Blueprint Class
+	springArm = FindComponentByClass<USpringArmComponent>();
+	camera = FindComponentByClass<UCameraComponent>();
 
 	maxAmmo = ammo;
 }

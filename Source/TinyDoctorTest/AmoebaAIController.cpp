@@ -7,21 +7,20 @@ void AAmoebaAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (playerReference == nullptr)
-		playerReference = Cast<AActor>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	playerReference = Cast<AActor>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	
 	characterReference = Cast<AAmoeba>(GetPawn());
 
 	originalPosition = characterReference->GetActorLocation();
 
-	bRoamingMovingToLocation = false;
+	walkSpeed = characterReference->GetCharacterMovement()->MaxWalkSpeed;
 
-	originalWalkSpeed = characterReference->GetCharacterMovement()->MaxWalkSpeed;
+	StartPatrolMode();
 }
 
 void AAmoebaAIController::Tick(float DeltaTime)
 {
-	if (characterReference->delayed == false)
+	if (!characterReference->delayed)
 		AI();
 }
 
@@ -35,89 +34,123 @@ void AAmoebaAIController::AI()
 	case AIMode::Chase:
 		ChaseMode();
 		break;
-	case AIMode::Return:
-		ReturnMode();
-		break;
 	}
+}
+
+void AAmoebaAIController::StartPatrolMode()
+{
+	aiMode = AIMode::Patrol;
+	characterReference->GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
+	PickNewRoamingTargetAndMoveThere();
 }
 
 void AAmoebaAIController::PatrolMode()
 {
-	characterReference->GetCharacterMovement()->MaxWalkSpeed = characterReference->slowWalkSpeed;
-
-	// Check whether to start Chase Mode
-	float distanceToPlayer = FVector(playerReference->GetActorLocation() - characterReference->GetActorLocation()).Size();
-	if (distanceToPlayer <= characterReference->detectionRange)
+	// Checks distance to player to see whether to start chasing him or not.
+	if (DistanceToPlayer() <= characterReference->detectionRadius)
 	{
-		bRoamingMovingToLocation = false;
-		characterReference->GetCharacterMovement()->MaxWalkSpeed = originalWalkSpeed;
-		aiMode = AIMode::Chase;
-		GetWorld()->GetNavigationSystem()->SimpleMoveToActor(this, playerReference);
-		ChaseMode();
+		// Checks if player is within field of view
+
+		// Relative vector between player and enemy
+		FVector relativeVector = FVector(playerReference->GetActorLocation() - characterReference->GetActorLocation());
+
+		// Calculates the difference in degrees between the enemy's forward vector and relativeVector
+		float dotProduct = FVector::DotProduct(characterReference->GetActorForwardVector(), relativeVector);
+		float cosineValue = dotProduct / relativeVector.Size();
+		float degreeDifference = FMath::Abs(FMath::RadiansToDegrees(FMath::Acos(cosineValue)));
+		if (degreeDifference <= characterReference->fieldOfView / 2.f)
+		{
+			// Insert line-tracing code here
+			FHitResult hitResult;
+			const FVector lineTraceStart = characterReference->GetActorLocation();
+			const FVector lineTraceEnd = playerReference->GetActorLocation();
+			FCollisionQueryParams collisionParams = FCollisionQueryParams();
+			collisionParams.AddIgnoredActor(characterReference);
+
+			//DrawDebugLine(GetWorld(), lineTraceStart, lineTraceEnd, FColor(255, 0, 0, 255), true, 1.f, 99, 5.f);
+
+			GetWorld()->LineTraceSingleByChannel(hitResult, lineTraceStart, lineTraceEnd, ECC_Visibility, collisionParams);
+			if (hitResult.Actor == playerReference)
+			{
+				StartChaseMode();
+				return;
+			}
+		}
+	}
+
+	// If the player gets too close, the enemy will start Chase Mode. Regardless of vision.
+	if (DistanceToPlayer() <= characterReference->hearingRadius)
+	{
+		StartChaseMode();
 		return;
 	}
 
-	AIRoam();
+	Roaming();
 }
 
-void AAmoebaAIController::AIRoam()
+void AAmoebaAIController::Roaming()
 {
-	if (!bRoamingMovingToLocation)
+	if (!GetWorldTimerManager().IsTimerActive(delayTimerHandle))
 	{
-		targetPosition = originalPosition;
-		targetPosition.X += FMath::FRandRange(-characterReference->patrolRadius, characterReference->patrolRadius);
-		targetPosition.Y += FMath::FRandRange(-characterReference->patrolRadius, characterReference->patrolRadius);
-
-		GetWorld()->GetNavigationSystem()->SimpleMoveToLocation(this, targetPosition);
-		bRoamingMovingToLocation = true;
-	}
-	else
-	{
-		const float reachedTargetThreshold = 100.f;
+		// Controls how far away the enemy must be from its target before it starts the waiting-timer.
+		// NB! Be careful changing this, might stop roaming from working
+		const float reachedTargetThreshold = 150.f;
+		
 		float distanceToTarget = FVector(targetPosition - characterReference->GetActorLocation()).Size();
 		if (distanceToTarget <= reachedTargetThreshold)
 		{
-			bRoamingMovingToLocation = false;
+			const float minTimerLength = 0.5f;
+			const float maxTimerLength = 2.f;
+			float timerLength = FMath::FRandRange(minTimerLength, maxTimerLength);
+			GetWorldTimerManager().SetTimer(delayTimerHandle, this, &AAmoebaAIController::PickNewRoamingTargetAndMoveThere, timerLength, false);
 		}
 	}
 }
 
+void AAmoebaAIController::PickNewRoamingTargetAndMoveThere()
+{
+	FNavLocation targetPointOnNavMesh;
+	GetWorld()->GetNavigationSystem()->GetRandomReachablePointInRadius(originalPosition, characterReference->patrolRadius, targetPointOnNavMesh);
+	targetPosition = targetPointOnNavMesh.Location;
+
+	GetWorld()->GetNavigationSystem()->SimpleMoveToLocation(this, targetPosition);
+}
+
 void AAmoebaAIController::ChaseMode()
 {
-	// Check whether to start Return Mode
-	float distanceToPlayer = FVector(playerReference->GetActorLocation() - characterReference->GetActorLocation()).Size();
-	if (distanceToPlayer > characterReference->detectionRange)
+	// Check whether to start Patrol Mode. 
+	if (!GetWorldTimerManager().IsTimerActive(delayTimerHandle) && DistanceToPlayer() > characterReference->detectionRadius)
 	{
-		characterReference->GetCharacterMovement()->MaxWalkSpeed = characterReference->slowWalkSpeed;
-		aiMode = AIMode::Return;
-		GetWorld()->GetNavigationSystem()->SimpleMoveToLocation(this, originalPosition);
-		ReturnMode();
+		StartPatrolMode();
 		return;
+	}
+
+	// When close enough to the player, the enemy will move manually in order not to stop in front of the player.
+	const float manualMovementThreshold = 200.f;
+	if (DistanceToPlayer() <= manualMovementThreshold)
+	{
+		characterReference->AddMovementInput(FVector(playerReference->GetActorLocation() - characterReference->GetActorLocation()));
 	}
 }
 
-void AAmoebaAIController::ReturnMode()
+void AAmoebaAIController::StartChaseMode()
 {
-	// Check whether to start Chase Mode
-	float distanceToPlayer = FVector(playerReference->GetActorLocation() - characterReference->GetActorLocation()).Size();
-	if (distanceToPlayer <= characterReference->detectionRange)
-	{
-		GetCharacter()->GetCharacterMovement()->MaxWalkSpeed = originalWalkSpeed;
-		aiMode = AIMode::Chase;
-		GetWorld()->GetNavigationSystem()->SimpleMoveToActor(this, playerReference);
-		ChaseMode();
-		return;
-	}
-	
-	// Check whether to start Patrol Mode
-	const float reachedTargetThreshold = 300.f;
-	float distanceToTarget = FVector(originalPosition - GetPawn()->GetActorLocation()).Size();
-	if (distanceToTarget <= reachedTargetThreshold)
-	{
-		characterReference->GetCharacterMovement()->MaxWalkSpeed = characterReference->slowWalkSpeed;
-		aiMode = AIMode::Patrol;
-		PatrolMode();
-		return;
-	}
+	// Chase Mode must last for x seconds before checking to enter another mode. 
+	// This is to acommodate for the enemy entering Chase Mode when taking damage and not immdiately going back to Patrol Mode.
+	GetWorldTimerManager().SetTimer(delayTimerHandle, 3.0f, false);
+
+	aiMode = AIMode::Chase;
+	characterReference->GetCharacterMovement()->MaxWalkSpeed = characterReference->runSpeed;
+	MoveToPlayer();
+}
+
+void AAmoebaAIController::MoveToPlayer()
+{
+	GetWorld()->GetNavigationSystem()->SimpleMoveToActor(this, playerReference);
+}
+
+float AAmoebaAIController::DistanceToPlayer()
+{
+	return FVector(playerReference->GetActorLocation() - characterReference->GetActorLocation()).Size();
 }
 

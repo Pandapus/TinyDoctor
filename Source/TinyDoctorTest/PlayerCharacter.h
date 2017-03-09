@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "Projectile.h"
-
 #include "Unit.h"
 #include "PlayerCharacter.generated.h"
 
@@ -44,6 +42,9 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 		int maxAmmo;
+
+	UPROPERTY(EditAnywhere, Category = "Stats")
+		float weaponCooldown = 0.2f;
 	
 	
 };
