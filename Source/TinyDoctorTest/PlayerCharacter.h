@@ -24,15 +24,14 @@ protected:
 
 public:
 
-	UPROPERTY(EditAnywhere)
-		USpringArmComponent* springArm;
-
-	UPROPERTY(EditAnywhere)
-		UCameraComponent* camera;
+	USpringArmComponent* springArm;
+	UCameraComponent* camera;
 
 	void MoveForward(float value);
 	void MoveRight(float value);
 	void Shoot();
+
+	virtual void ReduceHealth(float amount, AActor* damageCauser, float horizontalKnockback, float verticalKnockback) override;
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class AProjectile> projectile;
@@ -45,6 +44,4 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Stats")
 		float weaponCooldown = 0.2f;
-	
-	
 };

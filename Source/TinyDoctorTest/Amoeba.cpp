@@ -3,7 +3,7 @@
 #include "TinyDoctorTest.h"
 #include "Amoeba.h"
 
-#include "AmoebaAIController.h"
+//#include "AmoebaAIController.h"
 
 AAmoeba::AAmoeba()
 {
@@ -46,6 +46,6 @@ void AAmoeba::ReduceHealth(float amount, AActor* damageCauser, float horizontalK
 	pushVector.Z = verticalKnockback;
 	LaunchCharacter(pushVector, false, true);
 	
-	Cast<AAmoebaAIController>(GetController())->StartChaseMode();
+	//Cast<AAmoebaAIController>(GetController())->StartChaseMode();
 }
 

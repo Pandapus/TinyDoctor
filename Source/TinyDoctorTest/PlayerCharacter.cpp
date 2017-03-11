@@ -4,6 +4,7 @@
 #include "PlayerCharacter.h"
 
 #include "Projectile.h"
+#include "StandardGameMode.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -48,6 +49,7 @@ void APlayerCharacter::MoveRight(float value)
 	AddMovementInput(direction);
 }
 
+
 void APlayerCharacter::Shoot()
 {
 	if (ammo > 0)
@@ -61,6 +63,27 @@ void APlayerCharacter::Shoot()
 
 		ammo--;
 	}
+}
+
+void APlayerCharacter::ReduceHealth(float amount, AActor* damageCauser, float horizontalKnockback, float verticalKnockback)
+{
+	health -= amount;
+
+	// If the unit is has too little health, kill it (with fire!!!)
+	if (health <= 0.f)
+	{
+		//Destroy();
+		Cast<AStandardGameMode>(GetWorld()->GetAuthGameMode())->GameOver();
+		return;
+	}
+
+	FVector pushVector = FVector(GetActorLocation() - damageCauser->GetActorLocation());
+	pushVector.Z = 0.f;
+	pushVector.Normalize();
+	pushVector.X *= horizontalKnockback;
+	pushVector.Y *= horizontalKnockback;
+	pushVector.Z = verticalKnockback;
+	LaunchCharacter(pushVector, true, true);
 }
 
 

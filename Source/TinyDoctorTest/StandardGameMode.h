@@ -13,7 +13,12 @@ class TINYDOCTORTEST_API AStandardGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	
-	
-	
+public:
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+		void PauseGame();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+		void GameOver();
 	
 };

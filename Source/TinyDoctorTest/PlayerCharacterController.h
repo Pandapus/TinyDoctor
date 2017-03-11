@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "PlayerCharacter.h"
+
 
 #include "GameFramework/PlayerController.h"
 #include "PlayerCharacterController.generated.h"
@@ -24,7 +24,7 @@ private:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-	APlayerCharacter* playerReference;
+	void PauseGame();
 
 	// Movement
 	void MoveForward(float value);
@@ -32,7 +32,6 @@ private:
 
 	// Shooting
 	void Shoot();
-	FTimerHandle shootCooldownTimerHandle;
 
 	// Gamepad aiming
 	bool bUsingGamepad = false;

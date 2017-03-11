@@ -3,6 +3,11 @@
 #include "TinyDoctorTest.h"
 #include "PlayerCharacterController.h"
 
+#include "PlayerCharacter.h"
+#include "StandardGameMode.h"
+
+APlayerCharacter* playerReference;
+
 APlayerCharacterController::APlayerCharacterController()
 {
 	bShowMouseCursor = true;
@@ -21,6 +26,7 @@ void APlayerCharacterController::SetupInputComponent()
 	
 	// Actions binding
 	InputComponent->BindAction("Shoot", IE_Pressed, this, &APlayerCharacterController::Shoot);
+	InputComponent->BindAction("Pause", IE_Pressed, this, &APlayerCharacterController::PauseGame).bExecuteWhenPaused = true;
 }
 
 void APlayerCharacterController::BeginPlay()
@@ -45,6 +51,11 @@ void APlayerCharacterController::Tick(float DeltaTime)
 		OrientTowardsGamepadAnalog();
 }
 
+void APlayerCharacterController::PauseGame()
+{
+	Cast<AStandardGameMode>(GetWorld()->GetAuthGameMode())->PauseGame();
+}
+
 void APlayerCharacterController::MoveForward(float value)
 {
 	playerReference->MoveForward(value);
@@ -57,6 +68,8 @@ void APlayerCharacterController::MoveRight(float value)
 
 void APlayerCharacterController::Shoot()
 {
+	static FTimerHandle shootCooldownTimerHandle;
+
 	if (!GetWorldTimerManager().IsTimerActive(shootCooldownTimerHandle))
 	{
 		playerReference->Shoot();
@@ -82,21 +95,6 @@ void APlayerCharacterController::OrientTowardsCursor()
 	{
 		// Calculates the vector between the actor and the point of impact caused by the ray-trace
 		FVector targetVector = Hit.ImpactPoint - playerReference->GetActorLocation();
-
-		/*
-		// Aiming-correction prototype (trigonometry)
-		// Finds the angle between the camera and the hitPoint.
-		float heightDifferenceBetweenPointAndCamera = playerReference->camera->GetComponentLocation().Z - Hit.ImpactPoint.Z;
-		float lengthDifference = Hit.ImpactPoint.X - playerReference->camera->GetComponentLocation().X;
-		float angleY = FMath::RadiansToDegrees(FMath::Atan(heightDifferenceBetweenPointAndCamera / lengthDifference));
-
-		float heightDifference = Hit.ImpactPoint.Z - playerReference->GetActorLocation().Z;
-
-		INSERT CORRECTION CODE HERE
-		
-		UE_LOG(LogTemp, Warning, TEXT("Angle is %f"), angleY);
-		UE_LOG(LogTemp, Warning, TEXT("HeightDifference is %f"), heightDifference);
-		*/
 
 		ControlRotation.Yaw = targetVector.Rotation().Yaw;
 	}

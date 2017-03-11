@@ -7,11 +7,7 @@ void AAmoebaAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	playerReference = Cast<AActor>(GetWorld()->GetFirstPlayerController()->GetPawn());
-	
-	characterReference = Cast<AAmoeba>(GetPawn());
-
-	originalPosition = characterReference->GetActorLocation();
+	characterReference = Cast<AAmoeba>(Super::characterReference);
 
 	walkSpeed = characterReference->GetCharacterMovement()->MaxWalkSpeed;
 
@@ -20,6 +16,8 @@ void AAmoebaAIController::BeginPlay()
 
 void AAmoebaAIController::Tick(float DeltaTime)
 {
+	Super::Tick(DeltaTime);
+
 	if (!characterReference->delayed)
 		AI();
 }
@@ -46,36 +44,10 @@ void AAmoebaAIController::StartPatrolMode()
 
 void AAmoebaAIController::PatrolMode()
 {
-	// Checks distance to player to see whether to start chasing him or not.
-	if (DistanceToPlayer() <= characterReference->detectionRadius)
+	if (CanEnemySeePlayer())
 	{
-		// Checks if player is within field of view
-
-		// Relative vector between player and enemy
-		FVector relativeVector = FVector(playerReference->GetActorLocation() - characterReference->GetActorLocation());
-
-		// Calculates the difference in degrees between the enemy's forward vector and relativeVector
-		float dotProduct = FVector::DotProduct(characterReference->GetActorForwardVector(), relativeVector);
-		float cosineValue = dotProduct / relativeVector.Size();
-		float degreeDifference = FMath::Abs(FMath::RadiansToDegrees(FMath::Acos(cosineValue)));
-		if (degreeDifference <= characterReference->fieldOfView / 2.f)
-		{
-			// Insert line-tracing code here
-			FHitResult hitResult;
-			const FVector lineTraceStart = characterReference->GetActorLocation();
-			const FVector lineTraceEnd = playerReference->GetActorLocation();
-			FCollisionQueryParams collisionParams = FCollisionQueryParams();
-			collisionParams.AddIgnoredActor(characterReference);
-
-			//DrawDebugLine(GetWorld(), lineTraceStart, lineTraceEnd, FColor(255, 0, 0, 255), true, 1.f, 99, 5.f);
-
-			GetWorld()->LineTraceSingleByChannel(hitResult, lineTraceStart, lineTraceEnd, ECC_Visibility, collisionParams);
-			if (hitResult.Actor == playerReference)
-			{
-				StartChaseMode();
-				return;
-			}
-		}
+		StartChaseMode();
+		return;
 	}
 
 	// If the player gets too close, the enemy will start Chase Mode. Regardless of vision.
@@ -88,14 +60,50 @@ void AAmoebaAIController::PatrolMode()
 	Roaming();
 }
 
+bool AAmoebaAIController::CanEnemySeePlayer()
+{
+	// Checks distance to player.
+	if (DistanceToPlayer() <= characterReference->detectionRadius)
+	{
+		// Checks if player is within field of view
+
+		// Relative vector between player and enemy
+		FVector relativeVector = FVector(playerReference->GetActorLocation() - characterReference->GetActorLocation());
+
+		// Calculates the difference in degrees between the enemy's forward vector and relativeVector using Dot Product (Skalar)
+		float dotProduct = FVector::DotProduct(characterReference->GetActorForwardVector(), relativeVector);
+		float cosineValue = dotProduct / relativeVector.Size();
+		float degreeDifference = FMath::Abs(FMath::RadiansToDegrees(FMath::Acos(cosineValue)));
+		if (degreeDifference <= characterReference->fieldOfView / 2.f)
+		{
+			// Line-traces to see if the enemy has a clear line of sight
+			FHitResult hitResult;
+			const FVector lineTraceStart = characterReference->GetActorLocation();
+			const FVector lineTraceEnd = playerReference->GetActorLocation();
+			FCollisionQueryParams collisionParams = FCollisionQueryParams();
+			collisionParams.AddIgnoredActor(characterReference);
+
+			//DrawDebugLine(GetWorld(), lineTraceStart, lineTraceEnd, FColor(255, 0, 0, 255), true, 1.f, 99, 5.f);
+
+			GetWorld()->LineTraceSingleByChannel(hitResult, lineTraceStart, lineTraceEnd, ECC_Visibility, collisionParams);
+			if (hitResult.Actor == playerReference)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
 void AAmoebaAIController::Roaming()
 {
 	if (!GetWorldTimerManager().IsTimerActive(delayTimerHandle))
 	{
-		// Controls how far away the enemy must be from its target before it starts the waiting-timer.
+		// Controls how far away the enemy must be from its targetLocation before it starts the waiting-timer.
 		// NB! Be careful changing this, might stop roaming from working
 		const float reachedTargetThreshold = 150.f;
-		
+
 		float distanceToTarget = FVector(targetPosition - characterReference->GetActorLocation()).Size();
 		if (distanceToTarget <= reachedTargetThreshold)
 		{
@@ -118,7 +126,7 @@ void AAmoebaAIController::PickNewRoamingTargetAndMoveThere()
 
 void AAmoebaAIController::ChaseMode()
 {
-	// Check whether to start Patrol Mode. 
+	// Check whether to start Patrol Mode.
 	if (!GetWorldTimerManager().IsTimerActive(delayTimerHandle) && DistanceToPlayer() > characterReference->detectionRadius)
 	{
 		StartPatrolMode();
@@ -143,14 +151,3 @@ void AAmoebaAIController::StartChaseMode()
 	characterReference->GetCharacterMovement()->MaxWalkSpeed = characterReference->runSpeed;
 	MoveToPlayer();
 }
-
-void AAmoebaAIController::MoveToPlayer()
-{
-	GetWorld()->GetNavigationSystem()->SimpleMoveToActor(this, playerReference);
-}
-
-float AAmoebaAIController::DistanceToPlayer()
-{
-	return FVector(playerReference->GetActorLocation() - characterReference->GetActorLocation()).Size();
-}
-

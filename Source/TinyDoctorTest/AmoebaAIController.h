@@ -2,17 +2,16 @@
 
 #pragma once
 
-// Includes the "AAmoeba"-class
 #include "Amoeba.h"
 
-#include "AIController.h"
+#include "BaseAIController.h"
 #include "AmoebaAIController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class TINYDOCTORTEST_API AAmoebaAIController : public AAIController
+class TINYDOCTORTEST_API AAmoebaAIController : public ABaseAIController
 {
 	GENERATED_BODY()
 	
@@ -22,43 +21,41 @@ protected:
 
 private:
 
-	// Holds reference to the player-actor. This is used to calculate the objects distance to the enemy.
-	AActor* playerReference;
-
 	// Reference to the Ameoba-character that the controller is controlling.
 	AAmoeba* characterReference;
 
 	// Original MaxWalkSpeed of the character being controlled
 	float walkSpeed;
 
-	// Calculates distance from enemy to player
-	float DistanceToPlayer();
-
-
 	//
 	// Methods that control the AI
 	//
+
 	enum class AIMode {
 		Patrol,
 		Chase
 	};
 
 	AIMode aiMode;
+
+	// Switch that calls correct method depending on aiMode
 	void AI();
 
 	FTimerHandle delayTimerHandle;
 
 	// Patrol Mode
-	FVector originalPosition;
 	FVector targetPosition = FVector::ZeroVector;
 	void StartPatrolMode();
 	void PatrolMode();
 	void Roaming();
 	void PickNewRoamingTargetAndMoveThere();
 
+	bool CanEnemySeePlayer();
+
 	// Chase Mode
 	void ChaseMode();
 public:
 	void StartChaseMode();
-	void MoveToPlayer();
+	
+	
 };
