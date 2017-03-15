@@ -2,18 +2,15 @@
 
 #pragma once
 
-#include "AIController.h"
+#include "BaseAIController.h"
 #include "VirusAIController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class TINYDOCTORTEST_API AVirusAIController : public AAIController
+class TINYDOCTORTEST_API AVirusAIController : public ABaseAIController
 {
 	GENERATED_BODY()
-	
-	
-	
 	
 };

@@ -9,8 +9,9 @@ void ABaseAIController::BeginPlay()
 
 	playerReference = Cast<AActor>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	characterReference = GetCharacter();
-
-	originalPosition = characterReference->GetActorLocation();
+	
+	if (characterReference != nullptr)
+		originalPosition = characterReference->GetActorLocation();
 }
 
 void ABaseAIController::Tick(float DeltaTime)

@@ -27,6 +27,19 @@ void APlayerCharacterController::SetupInputComponent()
 	// Actions binding
 	InputComponent->BindAction("Shoot", IE_Pressed, this, &APlayerCharacterController::Shoot);
 	InputComponent->BindAction("Pause", IE_Pressed, this, &APlayerCharacterController::PauseGame).bExecuteWhenPaused = true;
+
+	InputComponent->BindAction("Choose Standard Weapon", IE_Pressed, this, &APlayerCharacterController::SetStandardWeaponActive);
+	InputComponent->BindAction("Choose Shotgun", IE_Pressed, this, &APlayerCharacterController::SetShotgunWeaponActive);
+}
+
+void APlayerCharacterController::SetShotgunWeaponActive()
+{
+	playerReference->bStandardWeaponActive = false;
+}
+
+void APlayerCharacterController::SetStandardWeaponActive()
+{
+	playerReference->bStandardWeaponActive = true;
 }
 
 void APlayerCharacterController::BeginPlay()
@@ -43,8 +56,7 @@ void APlayerCharacterController::Tick(float DeltaTime)
 		bUsingGamepad = false;
 		bShowMouseCursor = true;
 	}
-		
-	
+
 	if (!bUsingGamepad)
 		OrientTowardsCursor();
 	else

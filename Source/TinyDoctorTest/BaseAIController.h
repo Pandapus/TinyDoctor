@@ -26,10 +26,10 @@ protected:
 	// Position at which the enemy spawned on
 	FVector originalPosition;
 
+public:
 	// Calculates distance from enemy to player
 	float DistanceToPlayer();
-
+	
 	// Moves characterReference to playerReference's position.
 	void MoveToPlayer();
-	
 };

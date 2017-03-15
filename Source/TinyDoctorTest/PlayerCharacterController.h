@@ -2,8 +2,6 @@
 
 #pragma once
 
-
-
 #include "GameFramework/PlayerController.h"
 #include "PlayerCharacterController.generated.h"
 
@@ -32,6 +30,9 @@ private:
 
 	// Shooting
 	void Shoot();
+
+	void SetStandardWeaponActive();
+	void SetShotgunWeaponActive();
 
 	// Gamepad aiming
 	bool bUsingGamepad = false;

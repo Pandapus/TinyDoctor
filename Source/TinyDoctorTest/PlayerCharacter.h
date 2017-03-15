@@ -29,7 +29,15 @@ public:
 
 	void MoveForward(float value);
 	void MoveRight(float value);
-	void Shoot();
+
+	UPROPERTY(BlueprintReadWrite)
+		bool bStandardWeaponActive = true;
+
+	UFUNCTION(BlueprintNativeEvent)
+		void Shoot();
+
+	UFUNCTION(BlueprintCallable)
+		void ShootStandard();
 
 	virtual void ReduceHealth(float amount, AActor* damageCauser, float horizontalKnockback, float verticalKnockback) override;
 

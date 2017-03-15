@@ -2,14 +2,14 @@
 
 #pragma once
 
-#include "Unit.h"
+#include "Enemy.h"
 #include "Amoeba.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class TINYDOCTORTEST_API AAmoeba : public AUnit
+class TINYDOCTORTEST_API AAmoeba : public AEnemy
 {
 	GENERATED_BODY()
 	
@@ -26,9 +26,6 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats")
 		float runSpeed = 200.f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
-		float detectionRadius = 1500.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 		float hearingRadius = 500.f;

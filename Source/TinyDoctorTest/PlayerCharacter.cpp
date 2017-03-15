@@ -49,8 +49,12 @@ void APlayerCharacter::MoveRight(float value)
 	AddMovementInput(direction);
 }
 
+void APlayerCharacter::Shoot_Implementation()
+{
+	// Insert warning here
+}
 
-void APlayerCharacter::Shoot()
+void APlayerCharacter::ShootStandard()
 {
 	if (ammo > 0)
 	{
