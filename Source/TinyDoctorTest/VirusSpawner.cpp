@@ -17,13 +17,7 @@ void AVirusSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	for (int i = 0; i <= numberToSpawn; i++)
-	{
-		FActorSpawnParameters spawnParameter = FActorSpawnParameters();
-		spawnParameter.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		AVirus* virusActor = GetWorld()->SpawnActor<AVirus>(virus, GetActorLocation(), FRotator::ZeroRotator, spawnParameter);
-		virusArray.Add(virusActor);
-	}
+	SpawnVirus();
 }
 
 // Called every frame
@@ -31,24 +25,60 @@ void AVirusSpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	for (AVirus* blehVirus : virusArray)
+	/*
+	if (aiMode == AIMode::Wait)
 	{
-		ABaseAIController* controller = Cast<ABaseAIController>(blehVirus->GetController());
-		APawn* playerReference = GetWorld()->GetFirstPlayerController()->GetPawn();
-		if (FVector(playerReference->GetActorLocation() - blehVirus->GetActorLocation()).Size() <= blehVirus->detectionRadius)
+		for (AVirus* virusActor : virusArray)
 		{
-			ChasePlayer();
-			break;
+			ABaseAIController* controller = Cast<ABaseAIController>(virusActor->GetController());
+			APawn* playerReference = GetWorld()->GetFirstPlayerController()->GetPawn();
+			if (FVector(playerReference->GetActorLocation() - virusActor->GetActorLocation()).Size() <= virusActor->detectionRadius)
+			{
+				ChasePlayer();
+				break;
+			}
 		}
+	}
+	*/
+}
+
+void AVirusSpawner::SpawnVirus()
+{
+	for (int i = 1; i <= numberToSpawn; i++)
+	{
+		const float randomYawRotation = FMath::FRandRange(-180.f, 180.f);
+		const FRotator spawnDirection = FRotator(0.f, randomYawRotation, 0.f);
+
+		FActorSpawnParameters spawnParameter = FActorSpawnParameters();
+		spawnParameter.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+		constexpr float spawnRadius = 200.f;
+		FNavLocation spawnLocationOnNavMesh = FNavLocation();
+		GetWorld()->GetNavigationSystem()->GetRandomPointInNavigableRadius(GetActorLocation(), spawnRadius, spawnLocationOnNavMesh);
+		FVector spawnLocation = spawnLocationOnNavMesh.Location;
+		spawnLocation.Z += 100.f;
+
+		AVirus* virusActor = GetWorld()->SpawnActor<AVirus>(virus, spawnLocation, spawnDirection, spawnParameter);
+		virusActor->Constructor(this);
 	}
 }
 
 void AVirusSpawner::ChasePlayer()
 {
-	APawn* playerReference = GetWorld()->GetFirstPlayerController()->GetPawn();
-	for (AVirus* blehVirus : virusArray)
+	for (AVirus* virusActor : virusArray)
 	{
-		GetWorld()->GetNavigationSystem()->SimpleMoveToActor(blehVirus->GetController(), playerReference);
+		ABaseAIController* controller = Cast<ABaseAIController>(virusActor->GetController());
+		controller->MoveToPlayer();
+		controller->aiMode = ABaseAIController::AIMode::Chase;
 	}
 }
 
+void AVirusSpawner::RemoveActorFromArray(AVirus* virusActor)
+{
+	virusArray.Remove(virusActor);
+}
+
+void AVirusSpawner::AddActorToArray(AVirus* virusActor)
+{
+	virusArray.Add(virusActor);
+}

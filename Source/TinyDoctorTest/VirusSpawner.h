@@ -22,9 +22,9 @@ private:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	TArray<AVirus*> virusArray;
+	void SpawnVirus();
 
-	void ChasePlayer();
+	TArray<AVirus*> virusArray;
 
 public:
 
@@ -34,4 +34,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		int numberToSpawn = 3;
 	
+	void ChasePlayer();
+	void RemoveActorFromArray(AVirus* virusActor);
+	void AddActorToArray(AVirus* virusActor);
 };

@@ -31,29 +31,19 @@ private:
 	// Methods that control the AI
 	//
 
-	enum class AIMode {
-		Patrol,
-		Chase
-	};
-
-	AIMode aiMode;
-
-	// Switch that calls correct method depending on aiMode
-	void AI();
-
 	FTimerHandle delayTimerHandle;
 
 	// Patrol Mode
 	FVector targetPosition = FVector::ZeroVector;
 	void StartPatrolMode();
-	void PatrolMode();
+	virtual void PatrolMode() override;
 	void Roaming();
 	void PickNewRoamingTargetAndMoveThere();
 
 	bool CanEnemySeePlayer();
 
 	// Chase Mode
-	void ChaseMode();
+	virtual void ChaseMode() override;
 public:
 	void StartChaseMode();
 	

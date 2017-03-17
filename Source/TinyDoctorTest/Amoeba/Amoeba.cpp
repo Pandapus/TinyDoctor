@@ -38,12 +38,7 @@ void AAmoeba::ReduceHealth(float amount, AActor* damageCauser, float horizontalK
 		return;
 	}
 
-	FVector pushVector = FVector(GetActorLocation() - damageCauser->GetActorLocation());
-	pushVector.Z = 0.f;
-	pushVector.Normalize();
-	pushVector.X = 0.f;
-	pushVector.Y = 0.f;
-	pushVector.Z = verticalKnockback;
+	FVector pushVector = FVector(0.f, 0.f, verticalKnockback);
 	LaunchCharacter(pushVector, false, true);
 	
 	Cast<AAmoebaAIController>(GetController())->StartChaseMode();

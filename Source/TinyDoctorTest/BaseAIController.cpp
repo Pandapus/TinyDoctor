@@ -8,15 +8,39 @@ void ABaseAIController::BeginPlay()
 	Super::BeginPlay();
 
 	playerReference = Cast<AActor>(GetWorld()->GetFirstPlayerController()->GetPawn());
-	characterReference = GetCharacter();
-	
+
+	characterReference = Cast<AEnemy>(GetCharacter());
 	if (characterReference != nullptr)
 		originalPosition = characterReference->GetActorLocation();
+	
 }
 
 void ABaseAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ABaseAIController::AI()
+{
+	switch (aiMode)
+	{
+	case AIMode::Patrol:
+		PatrolMode();
+		break;
+	case AIMode::Chase:
+		ChaseMode();
+		break;
+	}
+}
+
+void ABaseAIController::PatrolMode()
+{
+
+}
+
+void ABaseAIController::ChaseMode()
+{
+
 }
 
 float ABaseAIController::DistanceToPlayer()

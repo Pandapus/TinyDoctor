@@ -7,7 +7,7 @@ void AAmoebaAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	characterReference = Cast<AAmoeba>(Super::characterReference);
+	characterReference = Cast<AAmoeba>(GetCharacter());
 
 	walkSpeed = characterReference->GetCharacterMovement()->MaxWalkSpeed;
 
@@ -20,19 +20,6 @@ void AAmoebaAIController::Tick(float DeltaTime)
 
 	if (!characterReference->delayed)
 		AI();
-}
-
-void AAmoebaAIController::AI()
-{
-	switch (aiMode)
-	{
-	case AIMode::Patrol:
-		PatrolMode();
-		break;
-	case AIMode::Chase:
-		ChaseMode();
-		break;
-	}
 }
 
 void AAmoebaAIController::StartPatrolMode()
@@ -102,13 +89,13 @@ void AAmoebaAIController::Roaming()
 	{
 		// Controls how far away the enemy must be from its targetLocation before it starts the waiting-timer.
 		// NB! Be careful changing this, might stop roaming from working
-		const float reachedTargetThreshold = 150.f;
+		constexpr float reachedTargetThreshold = 150.f;
 
 		float distanceToTarget = FVector(targetPosition - characterReference->GetActorLocation()).Size();
 		if (distanceToTarget <= reachedTargetThreshold)
 		{
-			const float minTimerLength = 0.5f;
-			const float maxTimerLength = 2.f;
+			constexpr float minTimerLength = 0.5f;
+			constexpr float maxTimerLength = 2.f;
 			float timerLength = FMath::FRandRange(minTimerLength, maxTimerLength);
 			GetWorldTimerManager().SetTimer(delayTimerHandle, this, &AAmoebaAIController::PickNewRoamingTargetAndMoveThere, timerLength, false);
 		}
