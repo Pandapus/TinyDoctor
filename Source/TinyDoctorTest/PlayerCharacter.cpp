@@ -56,17 +56,14 @@ void APlayerCharacter::Shoot_Implementation()
 
 void APlayerCharacter::ShootStandard()
 {
-	if (ammo > 0)
-	{
-		const float SpawnOffset = 100.f;
+	const float SpawnOffset = 100.f;
 
-		FVector direction = GetActorForwardVector();
-		FVector position = GetActorLocation() + (direction * SpawnOffset);
+	FVector direction = GetActorForwardVector();
+	FVector position = GetActorLocation() + (direction * SpawnOffset);
 
-		AProjectile* actorReference = GetWorld()->SpawnActor<AProjectile>(projectile, position, direction.Rotation());
+	AProjectile* actorReference = GetWorld()->SpawnActor<AProjectile>(projectile, position, direction.Rotation());
 
-		ammo--;
-	}
+	ammo--;
 }
 
 void APlayerCharacter::ReduceHealth(float amount, AActor* damageCauser, float horizontalKnockback, float verticalKnockback)

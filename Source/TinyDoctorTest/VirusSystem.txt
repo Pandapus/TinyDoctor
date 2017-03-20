@@ -1,0 +1,4 @@
+#pragma once
+
+#include "Virus.h"
+#include "VirusSpawner.h"

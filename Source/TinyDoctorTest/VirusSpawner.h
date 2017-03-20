@@ -22,19 +22,22 @@ private:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void SpawnVirus();
+	//void SpawnVirus();
 
-	TArray<AVirus*> virusArray;
+	//TArray<AVirus*> virusArray;
 
 public:
-
+	/*
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class AVirus> virus;
+		*/
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		int numberToSpawn = 3;
 	
 	void ChasePlayer();
-	void RemoveActorFromArray(AVirus* virusActor);
-	void AddActorToArray(AVirus* virusActor);
+	/*
+	void RemoveActorFromArray(AActor* virusActor);
+	void AddActorToArray(AActor* virusActor);
+	*/
 };

@@ -17,31 +17,16 @@ void AVirusSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	SpawnVirus();
+	//SpawnVirus();
 }
 
 // Called every frame
 void AVirusSpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
-	/*
-	if (aiMode == AIMode::Wait)
-	{
-		for (AVirus* virusActor : virusArray)
-		{
-			ABaseAIController* controller = Cast<ABaseAIController>(virusActor->GetController());
-			APawn* playerReference = GetWorld()->GetFirstPlayerController()->GetPawn();
-			if (FVector(playerReference->GetActorLocation() - virusActor->GetActorLocation()).Size() <= virusActor->detectionRadius)
-			{
-				ChasePlayer();
-				break;
-			}
-		}
-	}
-	*/
 }
 
+/*
 void AVirusSpawner::SpawnVirus()
 {
 	for (int i = 1; i <= numberToSpawn; i++)
@@ -62,23 +47,28 @@ void AVirusSpawner::SpawnVirus()
 		virusActor->Constructor(this);
 	}
 }
+*/
 
 void AVirusSpawner::ChasePlayer()
 {
+	/*
 	for (AVirus* virusActor : virusArray)
 	{
 		ABaseAIController* controller = Cast<ABaseAIController>(virusActor->GetController());
 		controller->MoveToPlayer();
 		controller->aiMode = ABaseAIController::AIMode::Chase;
 	}
+	*/
 }
 
-void AVirusSpawner::RemoveActorFromArray(AVirus* virusActor)
+/*
+void AVirusSpawner::RemoveActorFromArray(AActor* virusActor)
 {
-	virusArray.Remove(virusActor);
+	//virusArray.Remove(virusActor);
 }
 
-void AVirusSpawner::AddActorToArray(AVirus* virusActor)
+void AVirusSpawner::AddActorToArray(AActor* virusActor)
 {
-	virusArray.Add(virusActor);
+	//virusArray.Add(virusActor);
 }
+*/

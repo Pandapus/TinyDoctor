@@ -8,6 +8,10 @@
 
 APlayerCharacter* playerReference;
 
+constexpr float gamepadActivateThreshold = 0.25f;
+FVector gamepadAimDirection = FVector::ZeroVector;
+FVector previousMousePosition = FVector::ZeroVector;
+
 APlayerCharacterController::APlayerCharacterController()
 {
 	bShowMouseCursor = true;
