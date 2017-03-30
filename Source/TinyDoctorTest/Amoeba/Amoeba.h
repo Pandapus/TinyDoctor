@@ -39,5 +39,5 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 		bool delayed;
 
-	virtual void ReduceHealth(float amount, AActor* damageCauser, float horizontalKnockback, float verticalKnockback) override;
+	virtual bool TakeDamageWithKnockback(float amount, FVector damageOrigin, float horizontalKnockback, float verticalKnockback) override;
 };

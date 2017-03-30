@@ -27,20 +27,15 @@ void AAmoeba::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AAmoeba::ReduceHealth(float amount, AActor* damageCauser, float horizontalKnockback, float verticalKnockback)
+bool AAmoeba::TakeDamageWithKnockback(float amount, FVector damageOrigin, float horizontalKnockback, float verticalKnockback)
 {
-	health -= amount;
-
-	// If the unit is has too little health, kill it (with fire!!!)
-	if (health <= 0.f)
+	if (Super::TakeDamageWithKnockback(amount, damageOrigin, horizontalKnockback, verticalKnockback) == false)
 	{
-		Destroy();
-		return;
+		Cast<AAmoebaAIController>(GetController())->StartChaseMode();
+		return false;
 	}
-
-	FVector pushVector = FVector(0.f, 0.f, verticalKnockback);
-	LaunchCharacter(pushVector, false, true);
-	
-	Cast<AAmoebaAIController>(GetController())->StartChaseMode();
+	else
+		return true;
 }
+
 

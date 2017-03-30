@@ -26,23 +26,33 @@ void AUnit::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AUnit::ReduceHealth(float amount, AActor* damageCauser, float horizontalKnockback, float verticalKnockback)
+bool AUnit::TakeDamageWithKnockback(float amount, FVector damageOrigin, float horizontalKnockback, float verticalKnockback)
+{
+	if (ReduceHealth(amount) == false)
+	{
+		FVector pushVector = FVector(GetActorLocation() - damageOrigin);
+		pushVector.Z = 0.f;
+		pushVector.Normalize();
+		pushVector.X *= horizontalKnockback;
+		pushVector.Y *= horizontalKnockback;
+		pushVector.Z = verticalKnockback;
+		LaunchCharacter(pushVector, true, true);
+
+		return false;
+	}
+	else
+		return true;
+}
+
+bool AUnit::ReduceHealth(float amount)
 {
 	health -= amount;
 
-	// If the unit is has too little health, kill it (with fire!!!)
 	if (health <= 0.f)
 	{
 		Destroy();
-		return;
+		return true;
 	}
-
-	FVector pushVector = FVector(GetActorLocation() - damageCauser->GetActorLocation());
-	pushVector.Z = 0.f;
-	pushVector.Normalize();
-	pushVector.X *= horizontalKnockback;
-	pushVector.Y *= horizontalKnockback;
-	pushVector.Z = verticalKnockback;
-	LaunchCharacter(pushVector, true, true);
+	else
+		return false;
 }
-

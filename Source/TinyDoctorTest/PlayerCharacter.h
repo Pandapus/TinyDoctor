@@ -25,7 +25,7 @@ protected:
 public:
 
 	USpringArmComponent* springArm;
-	UCameraComponent* camera;
+	//UCameraComponent* camera;
 
 	void MoveForward(float value);
 	void MoveRight(float value);
@@ -38,8 +38,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		void ShootStandard();
-
-	virtual void ReduceHealth(float amount, AActor* damageCauser, float horizontalKnockback, float verticalKnockback) override;
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class AProjectile> projectile;

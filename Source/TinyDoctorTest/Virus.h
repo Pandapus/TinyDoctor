@@ -26,6 +26,4 @@ public:
 	void Constructor(AActor* virusSpawner);
 
 	void StartChasing();
-
-	virtual void ReduceHealth(float amount, AActor* damageCauser, float horizontalKnockback, float verticalKnockback) override;
 };

@@ -27,7 +27,12 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 		float maxHealth;
 
+	// Unit takes damage and gets knocked back. Returns true if unit died.
 	UFUNCTION(BlueprintCallable)
-		virtual void ReduceHealth(float amount, AActor* damageCauser, float horizontalKnockback, float verticalKnockback);
+		virtual bool TakeDamageWithKnockback(float amount, FVector damageOrigin, float horizontalKnockback = 1000.f, float verticalKnockback = 1000.f);
+
+	// Lowers unit's health. Return true if unit died.
+	UFUNCTION(BlueprintCallable)
+		virtual bool ReduceHealth(float amount);
 	
 };
