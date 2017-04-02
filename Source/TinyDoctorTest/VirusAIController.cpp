@@ -13,16 +13,13 @@ void AVirusAIController::BeginPlay()
 void AVirusAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	AI();
 }
 
 void AVirusAIController::PatrolMode()
 {
 	if (DistanceToPlayer() <= characterReference->detectionRadius)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Player within range"));
-		Cast<AVirus>(characterReference)->StartChasing();
+		//Cast<AVirus>(characterReference)->
 	}
 }
 

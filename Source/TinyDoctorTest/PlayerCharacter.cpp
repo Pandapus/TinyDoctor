@@ -24,7 +24,6 @@ void APlayerCharacter::BeginPlay()
 
 	// Finds components on the Blueprint Class
 	springArm = FindComponentByClass<USpringArmComponent>();
-	//camera = FindComponentByClass<UCameraComponent>();
 
 	maxAmmo = ammo;
 }
@@ -35,23 +34,26 @@ void APlayerCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void APlayerCharacter::MoveForward(float value)
+void APlayerCharacter::MoveForward(const float value)
 {
 	FVector direction = FVector::ForwardVector * value;
 	direction = direction.RotateAngleAxis(springArm->GetComponentRotation().Yaw, FVector::UpVector);
 	AddMovementInput(direction);
 }
 
-void APlayerCharacter::MoveRight(float value)
+void APlayerCharacter::MoveRight(const float value)
 {
 	FVector direction = FVector::RightVector * value;
 	direction = direction.RotateAngleAxis(springArm->GetComponentRotation().Yaw, FVector::UpVector);
 	AddMovementInput(direction);
 }
 
-void APlayerCharacter::Shoot_Implementation()
+void APlayerCharacter::Shoot()
 {
-	// Insert warning here
+	if (bStandardWeaponActive)
+		ShootStandard();
+	else
+		Shotgun();
 }
 
 void APlayerCharacter::ShootStandard()
@@ -66,4 +68,32 @@ void APlayerCharacter::ShootStandard()
 	ammo--;
 }
 
+void APlayerCharacter::Shotgun_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Shotgun-method is not intended to be used in C++. Use a BP version of this method."));
+}
 
+const int APlayerCharacter::GetAmmo() { return ammo; }
+
+const int APlayerCharacter::GetMaxAmmo() { return maxAmmo; }
+
+int APlayerCharacter::ChangeAmmo(const int amount)
+{
+	ammo += amount;
+
+	if (ammo > maxAmmo)
+		ammo = maxAmmo;
+	else if (ammo < 0)
+		ammo = 0;
+
+	return ammo;
+}
+
+int APlayerCharacter::DecreaseAmmo(const int amount)
+{
+	ammo -= amount;
+
+	if (ammo < 0) ammo = 0;
+
+	return ammo;
+}

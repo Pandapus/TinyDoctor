@@ -7,19 +7,26 @@ void AAmoebaAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	characterReference = Cast<AAmoeba>(GetCharacter());
-
-	walkSpeed = characterReference->GetCharacterMovement()->MaxWalkSpeed;
-
-	StartPatrolMode();
+	characterReference = Cast<AAmoeba>(Super::characterReference);
+	if (characterReference != nullptr)
+	{
+		walkSpeed = characterReference->GetCharacterMovement()->MaxWalkSpeed;
+		StartPatrolMode();
+	}
 }
 
 void AAmoebaAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (!characterReference->delayed)
-		AI();
+	AI();
+}
+
+void AAmoebaAIController::SetCharacterReference()
+{
+	Super::SetCharacterReference();
+	characterReference = Cast<AAmoeba>(Super::characterReference);
+	walkSpeed = characterReference->GetCharacterMovement()->MaxWalkSpeed;
 }
 
 void AAmoebaAIController::StartPatrolMode()
@@ -55,7 +62,7 @@ bool AAmoebaAIController::CanEnemySeePlayer()
 		// Checks if player is within field of view
 
 		// Relative vector between player and enemy
-		FVector relativeVector = FVector(playerReference->GetActorLocation() - characterReference->GetActorLocation());
+		FVector relativeVector = GetVectorToPlayer();
 
 		// Calculates the difference in degrees between the enemy's forward vector and relativeVector using Dot Product (Skalar)
 		float dotProduct = FVector::DotProduct(characterReference->GetActorForwardVector(), relativeVector);

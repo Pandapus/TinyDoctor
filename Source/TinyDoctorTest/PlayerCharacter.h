@@ -13,6 +13,26 @@ class TINYDOCTORTEST_API APlayerCharacter : public AUnit
 {
 	GENERATED_BODY()
 	
+private:
+	USpringArmComponent* springArm;
+
+	// Stats
+	UPROPERTY(EditAnywhere, Category = "Stats")
+		int ammo = 40;
+	int maxAmmo;
+	UPROPERTY(EditAnywhere, Category = "Stats")
+		float weaponCooldown = 0.2f;
+
+	// Weapon associated variables and methods.
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class AProjectile> projectile;
+	bool bStandardWeaponActive = true;
+	void Shoot();
+	void ShootStandard();
+	
+	void MoveForward(const float value);
+	void MoveRight(const float value);
+
 protected:
 	// Sets default values for this character's properties
 	APlayerCharacter();
@@ -22,32 +42,18 @@ protected:
 	// Called every frames
 	virtual void Tick(float DeltaTime) override;
 
-public:
-
-	USpringArmComponent* springArm;
-	//UCameraComponent* camera;
-
-	void MoveForward(float value);
-	void MoveRight(float value);
-
-	UPROPERTY(BlueprintReadWrite)
-		bool bStandardWeaponActive = true;
-
 	UFUNCTION(BlueprintNativeEvent)
-		void Shoot();
+		void Shotgun();
 
+public:
+	UFUNCTION(BlueprintPure)
+		const int GetAmmo();
+	UFUNCTION(BlueprintPure)
+		const int GetMaxAmmo();
 	UFUNCTION(BlueprintCallable)
-		void ShootStandard();
+		int ChangeAmmo(const int amount);
+	UFUNCTION(BlueprintCallable)
+		int DecreaseAmmo(const int amount);
 
-	UPROPERTY(EditAnywhere)
-		TSubclassOf<class AProjectile> projectile;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-		int ammo = 40;
-
-	UPROPERTY(BlueprintReadOnly)
-		int maxAmmo;
-
-	UPROPERTY(EditAnywhere, Category = "Stats")
-		float weaponCooldown = 0.2f;
+	friend class APlayerCharacterController;
 };

@@ -19,7 +19,9 @@ void AAmoeba::BeginPlay()
 {
 	Super::BeginPlay();
 
-	delayed = false;
+	// In case the actor is spawned at runtime. The controller will then be spawned first and unable to get it's characterReference
+	// using BeginPlay.
+	Cast<AAmoebaAIController>(GetController())->SetCharacterReference();
 }
 
 void AAmoeba::Tick(float DeltaTime)
@@ -27,7 +29,7 @@ void AAmoeba::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-bool AAmoeba::TakeDamageWithKnockback(float amount, FVector damageOrigin, float horizontalKnockback, float verticalKnockback)
+bool AAmoeba::TakeDamageWithKnockback(const float amount, const FVector damageOrigin, const float horizontalKnockback, const float verticalKnockback)
 {
 	if (Super::TakeDamageWithKnockback(amount, damageOrigin, horizontalKnockback, verticalKnockback) == false)
 	{

@@ -26,9 +26,13 @@ void AUnit::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-bool AUnit::TakeDamageWithKnockback(float amount, FVector damageOrigin, float horizontalKnockback, float verticalKnockback)
+const float AUnit::GetHealth() { return health; }
+
+const float AUnit::GetMaxHealth() { return maxHealth; }
+
+bool AUnit::TakeDamageWithKnockback(const float amount, FVector damageOrigin, float horizontalKnockback, float verticalKnockback)
 {
-	if (ReduceHealth(amount) == false)
+	if (ChangeHealth(-amount) == false)
 	{
 		FVector pushVector = FVector(GetActorLocation() - damageOrigin);
 		pushVector.Z = 0.f;
@@ -44,15 +48,52 @@ bool AUnit::TakeDamageWithKnockback(float amount, FVector damageOrigin, float ho
 		return true;
 }
 
-bool AUnit::ReduceHealth(float amount)
+bool AUnit::DecreaseHealth(const float amount, float &newHealth)
 {
 	health -= amount;
 
 	if (health <= 0.f)
 	{
+		health = 0.f;
+		newHealth = health;
 		Destroy();
 		return true;
 	}
-	else
-		return false;
+
+	newHealth = health;
+	return false;
+}
+
+bool AUnit::ChangeHealth(const float amount, float &newHealth)
+{
+	health += amount;
+
+	if (health > maxHealth)
+		health = maxHealth;
+	else if (health <= 0.f)
+	{
+		health = 0.f;
+		newHealth = health;
+		Destroy();
+		return true;
+	}
+
+	newHealth = health;
+	return false;
+}
+
+bool AUnit::ChangeHealth(const float amount)
+{
+	health += amount;
+
+	if (health > maxHealth)
+		health = maxHealth;
+	else if (health <= 0.f)
+	{
+		health = 0.f;
+		Destroy();
+		return true;
+	}
+
+	return false;
 }

@@ -2,6 +2,8 @@
 
 #pragma once
 
+
+
 #include "Enemy.h"
 #include "Virus.generated.h"
 
@@ -26,4 +28,7 @@ public:
 	void Constructor(AActor* virusSpawner);
 
 	void StartChasing();
+
+	UPROPERTY(BlueprintReadWrite)
+		bool bChasingPlayer = false;
 };

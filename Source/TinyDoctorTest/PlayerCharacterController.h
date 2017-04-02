@@ -25,8 +25,8 @@ private:
 	void PauseGame();
 
 	// Movement
-	void MoveForward(float value);
-	void MoveRight(float value);
+	void MoveForward(const float value);
+	void MoveRight(const float value);
 
 	// Shooting
 	void Shoot();
@@ -36,12 +36,12 @@ private:
 
 	// Gamepad aiming
 	bool bUsingGamepad = false;
-	void GamepadAimForward(float value);
-	void GamepadAimRight(float value);
+	void GamepadAimForward(const float value);
+	void GamepadAimRight(const float value);
 	void OrientTowardsGamepadAnalog();
 
 	// Cursor-oriented aiming
-	bool CheckForMouseMovement();
+	const bool CheckForMouseMovement();
 	void OrientTowardsCursor();
 	
 };
