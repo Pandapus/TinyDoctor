@@ -30,7 +30,7 @@ const float AUnit::GetHealth() { return health; }
 
 const float AUnit::GetMaxHealth() { return maxHealth; }
 
-bool AUnit::TakeDamageWithKnockback(const float amount, FVector damageOrigin, float horizontalKnockback, float verticalKnockback)
+bool AUnit::TakeDamageWithKnockback(const float amount, const FVector damageOrigin, float horizontalKnockback, float verticalKnockback)
 {
 	if (ChangeHealth(-amount) == false)
 	{
