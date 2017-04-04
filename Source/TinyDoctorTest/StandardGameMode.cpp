@@ -5,10 +5,15 @@
 
 void AStandardGameMode::PauseGame_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Pause Game-method is not intended to be used in C++. Use a BP version of this method."));
+	UE_LOG(LogTemp, Warning, TEXT("AStandardGameMode::PauseGame() is not intended to be used in C++. Use a BP version of this method."));
 }
 
 void AStandardGameMode::GameOver_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Game Over-method is not intended to be used in C++. Use a BP version of this method."));
+	UE_LOG(LogTemp, Warning, TEXT("AStandardGameMode::GameOver() is not intended to be used in C++. Use a BP version of this method."));
+}
+
+void AStandardGameMode::GameWon_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("AStandardGameMode::GameWon() is not intended to be used in C++. Use a BP version of this method."));
 }

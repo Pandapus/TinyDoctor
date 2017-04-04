@@ -17,10 +17,6 @@ void AVirusAIController::Tick(float DeltaTime)
 
 void AVirusAIController::PatrolMode()
 {
-	if (DistanceToPlayer() <= characterReference->detectionRadius)
-	{
-		//Cast<AVirus>(characterReference)->
-	}
 }
 
 void AVirusAIController::ChaseMode()

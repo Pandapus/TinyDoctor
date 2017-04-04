@@ -20,12 +20,12 @@ private:
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-
-	ABoss* characterReference;
-
+	
 	virtual void SetCharacterReference() override;
 
 	TArray<AMinionSpawner*> spawners;
+
+	int currentHealthStep;
 
 	enum class AIMode {
 		Inactive,
@@ -44,12 +44,21 @@ private:
 	void Invulnerable();
 
 protected:
+	UPROPERTY(BlueprintReadOnly)
+		ABoss* characterReference;
+
 	UPROPERTY(EditAnywhere)
-		int amountToSpawnPerSpawner = 5;
+		int numberOfHealthSteps = 3;
+
+	UPROPERTY(EditAnywhere)
+		int amountToSpawnPerSpawner = 1;
 
 	UPROPERTY(BlueprintReadWrite)
 		TArray<AActor*> spawnedEnemies;
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+		void Activate();
+
 public:
-	friend class TSubclassOf<class AMinionSpawner>;
+	friend class AMinionSpawner;
 };

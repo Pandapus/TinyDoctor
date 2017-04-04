@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Enemy.h"
+#include "Unit.h"
 
 #include "AIController.h"
 #include "BaseAIController.generated.h"
@@ -16,7 +16,6 @@ class TINYDOCTORTEST_API ABaseAIController : public AAIController
 	GENERATED_BODY()
 	
 protected:
-	~ABaseAIController();
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -25,8 +24,7 @@ protected:
 	static AActor* playerReference;
 
 	// Reference to the character the AIController is controlling.
-	AEnemy* characterReference;
-
+	AUnit* characterReference;
 	virtual void SetCharacterReference();
 
 	// Position at which the enemy spawned on
@@ -52,4 +50,6 @@ protected:
 	// Moves characterReference to playerReference's position.
 	void MoveToPlayer();
 	
+public:
+	friend class AEnemy;
 };

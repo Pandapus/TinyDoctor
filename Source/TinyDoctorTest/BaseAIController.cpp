@@ -6,18 +6,11 @@
 // Defines the static pointer. (Assigns the memory adress).
 AActor* ABaseAIController::playerReference;
 
-ABaseAIController::~ABaseAIController()
-{
-	// Make sure the static pointer is reset whenever a level is stopped.
-	playerReference = nullptr;
-}
-
 void ABaseAIController::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if (playerReference == nullptr)
-		playerReference = Cast<AActor>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	playerReference = Cast<AActor>(GetWorld()->GetFirstPlayerController()->GetPawn());
 
 	SetCharacterReference();
 }
@@ -33,7 +26,7 @@ void ABaseAIController::SetCharacterReference()
 {
 	if (characterReference == nullptr)
 	{
-		characterReference = Cast<AEnemy>(GetCharacter());
+		characterReference = Cast<AUnit>(GetCharacter());
 		if (characterReference != nullptr)
 			originalPosition = characterReference->GetActorLocation();
 	}

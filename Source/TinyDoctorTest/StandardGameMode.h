@@ -20,5 +20,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 		void GameOver();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+		void GameWon();
 	
 };

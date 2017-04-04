@@ -21,10 +21,9 @@ protected:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-public:
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 		float detectionRadius = 1500.f;
 	
+public:
 	friend class ABaseAIController;
 };

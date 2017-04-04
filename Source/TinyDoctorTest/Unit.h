@@ -45,6 +45,7 @@ public:
 											 const float horizontalKnockback = 1000.f, const float verticalKnockback = 1000.f);
 
 	// Alters the unit's health. Returns true if the unit died.
-	bool ChangeHealth(const float amount);
+	virtual bool ChangeHealth(const float amount);
 	
+	friend class APlayerCharacter;
 };

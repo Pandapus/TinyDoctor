@@ -73,6 +73,21 @@ void APlayerCharacter::Shotgun_Implementation()
 	UE_LOG(LogTemp, Warning, TEXT("Shotgun-method is not intended to be used in C++. Use a BP version of this method."));
 }
 
+bool APlayerCharacter::ChangeHealth(const float amount)
+{
+	health += amount;
+
+	if (health > maxHealth)
+		health = maxHealth;
+	else if (health <= 0.f)
+	{
+		Cast<AStandardGameMode>(GetWorld()->GetAuthGameMode())->GameOver();
+		return true;
+	}
+
+	return false;
+}
+
 const int APlayerCharacter::GetAmmo() { return ammo; }
 
 const int APlayerCharacter::GetMaxAmmo() { return maxAmmo; }

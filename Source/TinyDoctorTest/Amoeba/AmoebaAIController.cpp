@@ -7,7 +7,6 @@ void AAmoebaAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	characterReference = Cast<AAmoeba>(Super::characterReference);
 	if (characterReference != nullptr)
 	{
 		walkSpeed = characterReference->GetCharacterMovement()->MaxWalkSpeed;
@@ -25,8 +24,11 @@ void AAmoebaAIController::Tick(float DeltaTime)
 void AAmoebaAIController::SetCharacterReference()
 {
 	Super::SetCharacterReference();
-	characterReference = Cast<AAmoeba>(Super::characterReference);
-	walkSpeed = characterReference->GetCharacterMovement()->MaxWalkSpeed;
+	if (Super::characterReference != nullptr)
+	{
+		characterReference = Cast<AAmoeba>(Super::characterReference);
+		walkSpeed = characterReference->GetCharacterMovement()->MaxWalkSpeed;
+	}
 }
 
 void AAmoebaAIController::StartPatrolMode()

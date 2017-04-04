@@ -46,6 +46,8 @@ protected:
 		void Shotgun();
 
 public:
+	virtual bool ChangeHealth(const float amount) override;
+
 	UFUNCTION(BlueprintPure)
 		const int GetAmmo();
 	UFUNCTION(BlueprintPure)

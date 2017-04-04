@@ -18,10 +18,6 @@ AAmoeba::AAmoeba()
 void AAmoeba::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// In case the actor is spawned at runtime. The controller will then be spawned first and unable to get it's characterReference
-	// using BeginPlay.
-	Cast<AAmoebaAIController>(GetController())->SetCharacterReference();
 }
 
 void AAmoeba::Tick(float DeltaTime)

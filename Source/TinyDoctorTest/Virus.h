@@ -2,8 +2,6 @@
 
 #pragma once
 
-
-
 #include "Enemy.h"
 #include "Virus.generated.h"
 
