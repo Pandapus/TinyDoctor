@@ -7,6 +7,10 @@ void AAmoebaAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
+<<<<<<< HEAD
+=======
+	characterReference = Cast<AAmoeba>(Super::characterReference);
+>>>>>>> 526c313219860ccf3b53f6d7324fe1cf6c45d9a6
 	if (characterReference != nullptr)
 	{
 		walkSpeed = characterReference->GetCharacterMovement()->MaxWalkSpeed;

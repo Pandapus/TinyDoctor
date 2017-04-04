@@ -41,8 +41,12 @@ public:
 
 	// Unit takes damage and gets knocked back. Returns true if unit died.
 	UFUNCTION(BlueprintCallable)
+<<<<<<< HEAD
 		virtual bool TakeDamageWithKnockback(const float amount, const FVector damageOrigin, 
 											 const float horizontalKnockback = 1000.f, const float verticalKnockback = 1000.f);
+=======
+		virtual bool TakeDamageWithKnockback(const float amount, const FVector damageOrigin, const float horizontalKnockback = 1000.f, const float verticalKnockback = 1000.f);
+>>>>>>> 526c313219860ccf3b53f6d7324fe1cf6c45d9a6
 	
 	// Alters the unit's health. Returns true if the unit died.
 	bool ChangeHealth(const float amount);
