@@ -50,36 +50,20 @@ bool AUnit::TakeDamageWithKnockback(const float amount, const FVector damageOrig
 
 bool AUnit::DecreaseHealth(const float amount, float &newHealth)
 {
-	health -= amount;
+	bool bResult = ChangeHealth(-amount);
 
-	if (health <= 0.f)
-	{
-		health = 0.f;
-		newHealth = health;
-		Destroy();
-		return true;
-	}
+	newHealth = GetHealth();
 
-	newHealth = health;
-	return false;
+	return bResult;
 }
 
 bool AUnit::ChangeHealth(const float amount, float &newHealth)
 {
-	health += amount;
+	bool bResult = ChangeHealth(amount);
 
-	if (health > maxHealth)
-		health = maxHealth;
-	else if (health <= 0.f)
-	{
-		health = 0.f;
-		newHealth = health;
-		Destroy();
-		return true;
-	}
+	newHealth = GetHealth();
 
-	newHealth = health;
-	return false;
+	return bResult;
 }
 
 bool AUnit::ChangeHealth(const float amount)
