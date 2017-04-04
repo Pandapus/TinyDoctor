@@ -36,16 +36,6 @@ void APlayerCharacterController::SetupInputComponent()
 	InputComponent->BindAction("Choose Shotgun", IE_Pressed, this, &APlayerCharacterController::SetShotgunWeaponActive);
 }
 
-void APlayerCharacterController::SetShotgunWeaponActive()
-{
-	playerReference->bStandardWeaponActive = false;
-}
-
-void APlayerCharacterController::SetStandardWeaponActive()
-{
-	playerReference->bStandardWeaponActive = true;
-}
-
 void APlayerCharacterController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -67,17 +57,27 @@ void APlayerCharacterController::Tick(float DeltaTime)
 		OrientTowardsGamepadAnalog();
 }
 
+void APlayerCharacterController::SetShotgunWeaponActive()
+{
+	playerReference->bStandardWeaponActive = false;
+}
+
+void APlayerCharacterController::SetStandardWeaponActive()
+{
+	playerReference->bStandardWeaponActive = true;
+}
+
 void APlayerCharacterController::PauseGame()
 {
 	Cast<AStandardGameMode>(GetWorld()->GetAuthGameMode())->PauseGame();
 }
 
-void APlayerCharacterController::MoveForward(float value)
+void APlayerCharacterController::MoveForward(const float value)
 {
 	playerReference->MoveForward(value);
 }
 
-void APlayerCharacterController::MoveRight(float value)
+void APlayerCharacterController::MoveRight(const float value)
 {
 	playerReference->MoveRight(value);
 }
@@ -86,14 +86,14 @@ void APlayerCharacterController::Shoot()
 {
 	static FTimerHandle shootCooldownTimerHandle;
 
-	if (!GetWorldTimerManager().IsTimerActive(shootCooldownTimerHandle))
+	if (playerReference->GetAmmo() > 0 && !GetWorldTimerManager().IsTimerActive(shootCooldownTimerHandle))
 	{
 		playerReference->Shoot();
 		GetWorldTimerManager().SetTimer(shootCooldownTimerHandle, playerReference->weaponCooldown, false);
 	}
 }
 
-bool APlayerCharacterController::CheckForMouseMovement()
+const bool APlayerCharacterController::CheckForMouseMovement()
 {
 	FVector currentMousePosition;
 	GetMousePosition(currentMousePosition.X, currentMousePosition.Y);
@@ -116,7 +116,7 @@ void APlayerCharacterController::OrientTowardsCursor()
 	}
 }
 
-void APlayerCharacterController::GamepadAimForward(float value)
+void APlayerCharacterController::GamepadAimForward(const float value)
 {
 	if (bUsingGamepad)
 		gamepadAimDirection.X = value;
@@ -132,7 +132,7 @@ void APlayerCharacterController::GamepadAimForward(float value)
 	}
 }
 
-void APlayerCharacterController::GamepadAimRight(float value)
+void APlayerCharacterController::GamepadAimRight(const float value)
 {
 	if (bUsingGamepad)
 		gamepadAimDirection.Y = value;
@@ -150,7 +150,7 @@ void APlayerCharacterController::GamepadAimRight(float value)
 
 void APlayerCharacterController::OrientTowardsGamepadAnalog()
 {
-	const float gamepadDeadzone = 0.5f;
+	constexpr float gamepadDeadzone = 0.5f;
 	if (gamepadAimDirection.Size() >= gamepadDeadzone)
 		ControlRotation.Yaw = gamepadAimDirection.Rotation().Yaw + 90.f + playerReference->springArm->GetComponentRotation().Yaw;
 }

@@ -10,6 +10,19 @@ class TINYDOCTORTEST_API AUnit : public ACharacter
 {
 	GENERATED_BODY()
 
+private:
+	UPROPERTY(EditAnywhere, Category = "Stats")
+		float health = 3.f;
+	float maxHealth;
+
+	// Alters the unit's health. Returns true if the unit died.
+	UFUNCTION(BlueprintCallable)
+		bool ChangeHealth(const float amount, float &newHealth);
+
+	// Decreases the unit's health. Returns true if the unit died.
+	UFUNCTION(BlueprintCallable)
+		bool DecreaseHealth(const float amount, float &newHealth);
+
 protected:
 	// Sets default values for this character's properties
 	AUnit();
@@ -20,14 +33,18 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-		float health = 3.f;
+	UFUNCTION(BlueprintPure)
+		const float GetHealth();
 
-	UPROPERTY(BlueprintReadOnly)
-		float maxHealth;
+	UFUNCTION(BlueprintPure)
+		const float GetMaxHealth();
 
+	// Unit takes damage and gets knocked back. Returns true if unit died.
 	UFUNCTION(BlueprintCallable)
-		virtual void ReduceHealth(float amount, AActor* damageCauser, float horizontalKnockback, float verticalKnockback);
+		virtual bool TakeDamageWithKnockback(const float amount, const FVector damageOrigin, 
+											 const float horizontalKnockback = 1000.f, const float verticalKnockback = 1000.f);
+	
+	// Alters the unit's health. Returns true if the unit died.
+	bool ChangeHealth(const float amount);
 	
 };

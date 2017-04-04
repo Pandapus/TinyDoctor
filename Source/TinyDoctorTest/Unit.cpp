@@ -26,23 +26,74 @@ void AUnit::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AUnit::ReduceHealth(float amount, AActor* damageCauser, float horizontalKnockback, float verticalKnockback)
+const float AUnit::GetHealth() { return health; }
+
+const float AUnit::GetMaxHealth() { return maxHealth; }
+
+bool AUnit::TakeDamageWithKnockback(const float amount, FVector damageOrigin, float horizontalKnockback, float verticalKnockback)
+{
+	if (ChangeHealth(-amount) == false)
+	{
+		FVector pushVector = FVector(GetActorLocation() - damageOrigin);
+		pushVector.Z = 0.f;
+		pushVector.Normalize();
+		pushVector.X *= horizontalKnockback;
+		pushVector.Y *= horizontalKnockback;
+		pushVector.Z = verticalKnockback;
+		LaunchCharacter(pushVector, true, true);
+
+		return false;
+	}
+	else
+		return true;
+}
+
+bool AUnit::DecreaseHealth(const float amount, float &newHealth)
 {
 	health -= amount;
 
-	// If the unit is has too little health, kill it (with fire!!!)
 	if (health <= 0.f)
 	{
+		health = 0.f;
+		newHealth = health;
 		Destroy();
-		return;
+		return true;
 	}
 
-	FVector pushVector = FVector(GetActorLocation() - damageCauser->GetActorLocation());
-	pushVector.Z = 0.f;
-	pushVector.Normalize();
-	pushVector.X *= horizontalKnockback;
-	pushVector.Y *= horizontalKnockback;
-	pushVector.Z = verticalKnockback;
-	LaunchCharacter(pushVector, true, true);
+	newHealth = health;
+	return false;
 }
 
+bool AUnit::ChangeHealth(const float amount, float &newHealth)
+{
+	health += amount;
+
+	if (health > maxHealth)
+		health = maxHealth;
+	else if (health <= 0.f)
+	{
+		health = 0.f;
+		newHealth = health;
+		Destroy();
+		return true;
+	}
+
+	newHealth = health;
+	return false;
+}
+
+bool AUnit::ChangeHealth(const float amount)
+{
+	health += amount;
+
+	if (health > maxHealth)
+		health = maxHealth;
+	else if (health <= 0.f)
+	{
+		health = 0.f;
+		Destroy();
+		return true;
+	}
+
+	return false;
+}

@@ -51,14 +51,12 @@ void AVirusSpawner::SpawnVirus()
 
 void AVirusSpawner::ChasePlayer()
 {
-	/*
+	AActor* playerRef = GetWorld()->GetFirstPlayerController()->GetPawn();
 	for (AVirus* virusActor : virusArray)
 	{
-		ABaseAIController* controller = Cast<ABaseAIController>(virusActor->GetController());
-		controller->MoveToPlayer();
-		controller->aiMode = ABaseAIController::AIMode::Chase;
+		virusActor->bChasingPlayer = true;
+		GetWorld()->GetNavigationSystem()->SimpleMoveToActor(virusActor->GetController(), playerRef);
 	}
-	*/
 }
 
 /*

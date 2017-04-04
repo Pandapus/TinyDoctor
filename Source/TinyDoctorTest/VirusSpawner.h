@@ -24,18 +24,20 @@ private:
 
 	//void SpawnVirus();
 
-	//TArray<AVirus*> virusArray;
-
 public:
 	/*
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class AVirus> virus;
 		*/
 
+	UPROPERTY(BlueprintReadWrite)
+		TArray<AVirus*> virusArray;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		int numberToSpawn = 3;
 	
-	void ChasePlayer();
+	UFUNCTION(BlueprintCallable)
+		void ChasePlayer();
 	/*
 	void RemoveActorFromArray(AActor* virusActor);
 	void AddActorToArray(AActor* virusActor);

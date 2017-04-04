@@ -12,7 +12,7 @@ UCLASS()
 class TINYDOCTORTEST_API AAmoeba : public AEnemy
 {
 	GENERATED_BODY()
-	
+
 protected:
 	// Constructor
 	AAmoeba();
@@ -22,8 +22,6 @@ protected:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-public:
-	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats")
 		float runSpeed = 200.f;
 
@@ -36,8 +34,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 		float patrolRadius = 750.f;
 
-	UPROPERTY(BlueprintReadWrite)
-		bool delayed;
+public:
 
-	virtual void ReduceHealth(float amount, AActor* damageCauser, float horizontalKnockback, float verticalKnockback) override;
+	virtual bool TakeDamageWithKnockback(const float amount, const FVector damageOrigin, const float horizontalKnockback, const float verticalKnockback) override;
+
+	friend class AAmoebaAIController;
 };

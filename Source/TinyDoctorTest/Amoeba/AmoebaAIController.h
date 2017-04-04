@@ -14,15 +14,16 @@ UCLASS()
 class TINYDOCTORTEST_API AAmoebaAIController : public ABaseAIController
 {
 	GENERATED_BODY()
-	
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
 private:
-
-	// Reference to the Ameoba-character that the controller is controlling.
+	// Reference to the pawn that the controller is controlling.
 	AAmoeba* characterReference;
+
+	virtual void SetCharacterReference() override;
 
 	// Original MaxWalkSpeed of the character being controlled
 	float walkSpeed;
@@ -31,6 +32,7 @@ private:
 	// Methods that control the AI
 	//
 
+	// Used to handle various delay effect associated with Patrol Mode usually.
 	FTimerHandle delayTimerHandle;
 
 	// Patrol Mode
@@ -45,7 +47,8 @@ private:
 	// Chase Mode
 	virtual void ChaseMode() override;
 public:
-	void StartChaseMode();
+	UFUNCTION(BlueprintCallable)
+		void StartChaseMode();
 	
-	
+	friend class AAmoeba;
 };

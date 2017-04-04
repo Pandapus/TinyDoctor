@@ -3,21 +3,40 @@
 #include "TinyDoctorTest.h"
 #include "BaseAIController.h"
 
+// Defines the static pointer. (Assigns the memory adress).
+AActor* ABaseAIController::playerReference;
+
+ABaseAIController::~ABaseAIController()
+{
+	// Make sure the static pointer is reset whenever a level is stopped.
+	playerReference = nullptr;
+}
+
 void ABaseAIController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	playerReference = Cast<AActor>(GetWorld()->GetFirstPlayerController()->GetPawn());
-
-	characterReference = Cast<AEnemy>(GetCharacter());
-	if (characterReference != nullptr)
-		originalPosition = characterReference->GetActorLocation();
 	
+	if (playerReference == nullptr)
+		playerReference = Cast<AActor>(GetWorld()->GetFirstPlayerController()->GetPawn());
+
+	SetCharacterReference();
 }
 
 void ABaseAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	AI();
+}
+
+void ABaseAIController::SetCharacterReference()
+{
+	if (characterReference == nullptr)
+	{
+		characterReference = Cast<AEnemy>(GetCharacter());
+		if (characterReference != nullptr)
+			originalPosition = characterReference->GetActorLocation();
+	}
 }
 
 void ABaseAIController::AI()
@@ -33,19 +52,18 @@ void ABaseAIController::AI()
 	}
 }
 
-void ABaseAIController::PatrolMode()
-{
+void ABaseAIController::PatrolMode() {}
 
+void ABaseAIController::ChaseMode() {}
+
+const FVector ABaseAIController::GetVectorToPlayer()
+{
+	return FVector(playerReference->GetActorLocation() - characterReference->GetActorLocation());
 }
 
-void ABaseAIController::ChaseMode()
+const float ABaseAIController::DistanceToPlayer()
 {
-
-}
-
-float ABaseAIController::DistanceToPlayer()
-{
-	return FVector(playerReference->GetActorLocation() - characterReference->GetActorLocation()).Size();
+	return GetVectorToPlayer().Size();
 }
 
 void ABaseAIController::MoveToPlayer()

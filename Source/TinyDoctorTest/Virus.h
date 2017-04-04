@@ -2,6 +2,8 @@
 
 #pragma once
 
+
+
 #include "Enemy.h"
 #include "Virus.generated.h"
 
@@ -27,5 +29,6 @@ public:
 
 	void StartChasing();
 
-	virtual void ReduceHealth(float amount, AActor* damageCauser, float horizontalKnockback, float verticalKnockback) override;
+	UPROPERTY(BlueprintReadWrite)
+		bool bChasingPlayer = false;
 };

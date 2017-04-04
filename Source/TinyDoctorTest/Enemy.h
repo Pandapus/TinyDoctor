@@ -26,5 +26,5 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 		float detectionRadius = 1500.f;
 	
-	
+	friend class ABaseAIController;
 };
