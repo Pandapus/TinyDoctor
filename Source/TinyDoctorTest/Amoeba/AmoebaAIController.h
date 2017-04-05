@@ -41,14 +41,11 @@ private:
 	virtual void PatrolMode() override;
 	void Roaming();
 	void PickNewRoamingTargetAndMoveThere();
-	FTimerHandle timerPickNewRoamingTargetInterval;
 
 	bool CanEnemySeePlayer();
 
 	// Chase Mode
 	virtual void ChaseMode() override;
-	FTimerHandle timerMoveToPlayerInterval;
-
 public:
 	UFUNCTION(BlueprintCallable)
 		void StartChaseMode();

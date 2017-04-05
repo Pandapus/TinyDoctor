@@ -106,7 +106,9 @@ int APlayerCharacter::ChangeAmmo(const int amount)
 
 int APlayerCharacter::DecreaseAmmo(const int amount)
 {
-	ChangeAmmo(-amount);
+	ammo -= amount;
+
+	if (ammo < 0) ammo = 0;
 
 	return ammo;
 }

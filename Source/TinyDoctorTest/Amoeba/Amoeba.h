@@ -22,29 +22,21 @@ protected:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, Category = "Stats")
-		float touchDamage = 1.f;
-
-	UPROPERTY(EditAnywhere, Category = "Stats")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats")
 		float runSpeed = 200.f;
 
-	UPROPERTY(EditAnywhere, Category = "AI")
-		float fieldOfView = 90.f;
-
-	UPROPERTY(EditAnywhere, Category = "AI")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 		float hearingRadius = 500.f;
 
-	UPROPERTY(EditAnywhere, Category = "AI")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
+		float fieldOfView = 90.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
 		float patrolRadius = 750.f;
 
-	UFUNCTION()
-		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
 public:
-	virtual bool TakeDamageWithKnockback(const float amount, const FVector damageOrigin, const float horizontalKnockback, const float verticalKnockback) override;
 
-	UFUNCTION(BlueprintCallable)
-		void StartChaseMode();
+	virtual bool TakeDamageWithKnockback(const float amount, const FVector damageOrigin, const float horizontalKnockback, const float verticalKnockback) override;
 
 	friend class AAmoebaAIController;
 };
