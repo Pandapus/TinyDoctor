@@ -92,6 +92,8 @@ const int APlayerCharacter::GetAmmo() { return ammo; }
 
 const int APlayerCharacter::GetMaxAmmo() { return maxAmmo; }
 
+const bool APlayerCharacter::GetActiveWeapon() { return bStandardWeaponActive; }
+
 int APlayerCharacter::ChangeAmmo(const int amount)
 {
 	ammo += amount;
@@ -109,4 +111,9 @@ int APlayerCharacter::DecreaseAmmo(const int amount)
 	ChangeAmmo(-amount);
 
 	return ammo;
+}
+
+void APlayerCharacter::WeaponChangeEvent_Implementation()
+{
+
 }

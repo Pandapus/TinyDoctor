@@ -56,6 +56,10 @@ public:
 		int ChangeAmmo(const int amount);
 	UFUNCTION(BlueprintCallable)
 		int DecreaseAmmo(const int amount);
+	UFUNCTION(BlueprintPure)
+		const bool GetActiveWeapon();
+	UFUNCTION(BlueprintNativeEvent)
+		void WeaponChangeEvent();
 
 	friend class APlayerCharacterController;
 };
