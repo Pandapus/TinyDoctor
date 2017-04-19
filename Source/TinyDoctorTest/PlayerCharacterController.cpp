@@ -60,11 +60,13 @@ void APlayerCharacterController::Tick(float DeltaTime)
 void APlayerCharacterController::SetShotgunWeaponActive()
 {
 	playerReference->bStandardWeaponActive = false;
+	playerReference->WeaponChangeEvent();
 }
 
 void APlayerCharacterController::SetStandardWeaponActive()
 {
 	playerReference->bStandardWeaponActive = true;
+	playerReference->WeaponChangeEvent();
 }
 
 void APlayerCharacterController::PauseGame()
