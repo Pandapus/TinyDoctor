@@ -90,8 +90,12 @@ void APlayerCharacterController::Shoot()
 
 	if (playerReference->GetAmmo() > 0 && !GetWorldTimerManager().IsTimerActive(shootCooldownTimerHandle))
 	{
+		if (playerReference->bStandardWeaponActive == true)
+			GetWorldTimerManager().SetTimer(shootCooldownTimerHandle, playerReference->singleShotCooldown, false);
+		else
+			GetWorldTimerManager().SetTimer(shootCooldownTimerHandle, playerReference->shotgunCooldown, false);
+
 		playerReference->Shoot();
-		GetWorldTimerManager().SetTimer(shootCooldownTimerHandle, playerReference->weaponCooldown, false);
 	}
 }
 

@@ -16,12 +16,18 @@ class TINYDOCTORTEST_API APlayerCharacter : public AUnit
 private:
 	USpringArmComponent* springArm;
 
+	void SetInitialStats();
+
 	// Stats
 	UPROPERTY(EditAnywhere, Category = "Stats")
 		int ammo = 40;
 	int maxAmmo;
 	UPROPERTY(EditAnywhere, Category = "Stats")
-		float weaponCooldown = 0.2f;
+		int singleShotCost = 1;
+	UPROPERTY(EditAnywhere, Category = "Stats")
+		float singleShotCooldown = 0.1f;
+	UPROPERTY(EditAnywhere, Category = "Stats")
+		float shotgunCooldown = 0.3f;
 
 	// Weapon associated variables and methods.
 	UPROPERTY(EditAnywhere)

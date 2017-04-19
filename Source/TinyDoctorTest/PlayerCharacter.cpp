@@ -5,6 +5,7 @@
 
 #include "Projectile.h"
 #include "StandardGameMode.h"
+#include "StandardGameInstance.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -25,13 +26,30 @@ void APlayerCharacter::BeginPlay()
 	// Finds components on the Blueprint Class
 	springArm = FindComponentByClass<USpringArmComponent>();
 
-	maxAmmo = ammo;
+	SetInitialStats();
 }
 
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void APlayerCharacter::SetInitialStats()
+{
+	UStandardGameInstance* gameInstanceRef = Cast<UStandardGameInstance>(GetWorld()->GetGameInstance());
+	if (gameInstanceRef->bRememberStats == true)
+	{
+		health = gameInstanceRef->playerHealth;
+		maxHealth = gameInstanceRef->playerMaxHealth;
+		ammo = gameInstanceRef->playerAmmo;
+		maxAmmo = gameInstanceRef->playerMaxAmmo;
+	}
+	else
+	{
+		maxAmmo = ammo;
+		gameInstanceRef->StartGame();
+	}
 }
 
 void APlayerCharacter::MoveForward(const float value)
@@ -65,7 +83,7 @@ void APlayerCharacter::ShootStandard()
 
 	AProjectile* actorReference = GetWorld()->SpawnActor<AProjectile>(projectile, position, direction.Rotation());
 
-	ammo--;
+	ammo -= singleShotCost;
 }
 
 void APlayerCharacter::Shotgun_Implementation()
@@ -113,7 +131,4 @@ int APlayerCharacter::DecreaseAmmo(const int amount)
 	return ammo;
 }
 
-void APlayerCharacter::WeaponChangeEvent_Implementation()
-{
-
-}
+void APlayerCharacter::WeaponChangeEvent_Implementation() {}
