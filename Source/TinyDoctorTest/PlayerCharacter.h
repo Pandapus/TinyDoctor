@@ -5,7 +5,7 @@
 #include "Unit.h"
 #include "PlayerCharacter.generated.h"
 
-/**
+/*
  * 
  */
 UCLASS()
@@ -16,25 +16,25 @@ class TINYDOCTORTEST_API APlayerCharacter : public AUnit
 private:
 	USpringArmComponent* springArm;
 
-	void SetInitialStats();
-
 	// Stats
 	UPROPERTY(EditAnywhere, Category = "Stats")
 		int ammo = 40;
 	int maxAmmo;
 	UPROPERTY(EditAnywhere, Category = "Stats")
-		int singleShotCost = 1;
+		int rifleCost = 1;
 	UPROPERTY(EditAnywhere, Category = "Stats")
-		float singleShotCooldown = 0.1f;
+		float rifleCooldown = 0.1f;
+	UPROPERTY(EditAnywhere, Category = "Stats")
+		int shotgunCost = 2;
 	UPROPERTY(EditAnywhere, Category = "Stats")
 		float shotgunCooldown = 0.3f;
 
 	// Weapon associated variables and methods.
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<class AProjectile> projectile;
-	bool bStandardWeaponActive = true;
+		TSubclassOf<class AProjectile> projectileActor;
+	bool bRifleActive = true;
 	void Shoot();
-	void ShootStandard();
+	void ShootRifle();
 	
 	void MoveForward(const float value);
 	void MoveRight(const float value);
@@ -49,7 +49,7 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintNativeEvent)
-		void Shotgun();
+		void ShootShotgun();
 
 public:
 	virtual bool ChangeHealth(const float amount) override;
@@ -63,7 +63,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 		int DecreaseAmmo(const int amount);
 	UFUNCTION(BlueprintPure)
-		const bool GetActiveWeapon();
+		const bool IsRifleActive();
 	UFUNCTION(BlueprintNativeEvent)
 		void WeaponChangeEvent();
 

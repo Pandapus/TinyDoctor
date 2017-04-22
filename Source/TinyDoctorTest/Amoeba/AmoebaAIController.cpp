@@ -104,7 +104,7 @@ void AAmoebaAIController::Roaming()
 	{
 		// Controls how far away the enemy must be from its targetLocation before it starts the waiting-timer.
 		// NB! Be careful lowering this, might stop roaming from working
-		constexpr float reachedTargetThreshold = 150.f;
+		constexpr float reachedTargetThreshold = 175.f;
 
 		float distanceToTarget = FVector(targetPosition - characterReference->GetActorLocation()).Size();
 		if (distanceToTarget <= reachedTargetThreshold)

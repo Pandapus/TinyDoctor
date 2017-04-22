@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "Boss.h"
+
 #include "GameFramework/Actor.h"
 #include "MinionSpawner.generated.h"
 
@@ -20,8 +22,8 @@ protected:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(BlueprintReadOnly)
-		AActor* bossActorReference;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		ABoss* bossReference;
 
 	UFUNCTION(BlueprintNativeEvent)
 		void StartSpawning(const int amountToSpawn);

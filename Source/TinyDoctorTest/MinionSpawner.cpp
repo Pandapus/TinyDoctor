@@ -18,6 +18,7 @@ void AMinionSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	Cast<ABossAIController>(bossReference->GetController())->spawners.Add(this);
 }
 
 // Called every frame

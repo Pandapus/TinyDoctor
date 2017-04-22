@@ -19,6 +19,14 @@ private:
 
 	bool bInvulnerable = false;
 
+protected:
+	UPROPERTY(EditAnywhere, Category = "Stats")
+		int numberOfHealthSteps = 3;
+
+	UFUNCTION(BlueprintPure)
+		const bool GetInvulnerable();
+
+
 public:
 
 	friend class ABossAIController;

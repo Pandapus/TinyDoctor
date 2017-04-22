@@ -13,20 +13,20 @@ class TINYDOCTORTEST_API UStandardGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 	
-public:
-	UFUNCTION(BlueprintCallable)
-		void StartGame();
-
-	UPROPERTY(BlueprintReadWrite)
-		float playerHealth;
-	float playerMaxHealth;
-
-	UPROPERTY(BlueprintReadWrite)
-		int playerAmmo;
-	int playerMaxAmmo;
-
+private:
 	bool bRememberStats = false;
 
-	UPROPERTY(EditAnywhere)
-		TSubclassOf<class APlayerCharacter> playerClass;
+	void SetPlayerStats(float &playerHealth, float &playerMaxHealth, int &playerAmmo, int &playerMaxAmmo);
+
+protected:
+	UPROPERTY(BlueprintReadWrite)
+		float savedHealth = 0.f;
+	float savedMaxHealth = 0.f;
+	UPROPERTY(BlueprintReadWrite)
+		int savedAmmo = 0;
+	int savedMaxAmmo = 0;
+
+public:
+	friend class APlayerCharacter;
+
 };

@@ -31,8 +31,8 @@ private:
 	// Shooting
 	void Shoot();
 
-	void SetStandardWeaponActive();
-	void SetShotgunWeaponActive();
+	void SetRifleActive();
+	void SetShotgunActive();
 
 	// Gamepad aiming
 	bool bUsingGamepad = false;

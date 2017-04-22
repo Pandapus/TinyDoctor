@@ -16,4 +16,5 @@ bool ABoss::TakeDamageWithKnockback(const float amount, const FVector damageOrig
 	return false;
 }
 
+const bool ABoss::GetInvulnerable() { return bInvulnerable; }
 

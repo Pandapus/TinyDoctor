@@ -32,8 +32,8 @@ void APlayerCharacterController::SetupInputComponent()
 	InputComponent->BindAction("Shoot", IE_Pressed, this, &APlayerCharacterController::Shoot);
 	InputComponent->BindAction("Pause", IE_Pressed, this, &APlayerCharacterController::PauseGame).bExecuteWhenPaused = true;
 
-	InputComponent->BindAction("Choose Standard Weapon", IE_Pressed, this, &APlayerCharacterController::SetStandardWeaponActive);
-	InputComponent->BindAction("Choose Shotgun", IE_Pressed, this, &APlayerCharacterController::SetShotgunWeaponActive);
+	InputComponent->BindAction("Choose Standard Weapon", IE_Pressed, this, &APlayerCharacterController::SetRifleActive);
+	InputComponent->BindAction("Choose Shotgun", IE_Pressed, this, &APlayerCharacterController::SetShotgunActive);
 }
 
 void APlayerCharacterController::BeginPlay()
@@ -57,16 +57,22 @@ void APlayerCharacterController::Tick(float DeltaTime)
 		OrientTowardsGamepadAnalog();
 }
 
-void APlayerCharacterController::SetShotgunWeaponActive()
+void APlayerCharacterController::SetShotgunActive()
 {
-	playerReference->bStandardWeaponActive = false;
-	playerReference->WeaponChangeEvent();
+	if (playerReference->IsRifleActive())
+	{
+		playerReference->bRifleActive = false;
+		playerReference->WeaponChangeEvent();
+	}
 }
 
-void APlayerCharacterController::SetStandardWeaponActive()
+void APlayerCharacterController::SetRifleActive()
 {
-	playerReference->bStandardWeaponActive = true;
-	playerReference->WeaponChangeEvent();
+	if (!playerReference->IsRifleActive())
+	{
+		playerReference->bRifleActive = true;
+		playerReference->WeaponChangeEvent();
+	}
 }
 
 void APlayerCharacterController::PauseGame()
@@ -90,8 +96,8 @@ void APlayerCharacterController::Shoot()
 
 	if (playerReference->GetAmmo() > 0 && !GetWorldTimerManager().IsTimerActive(shootCooldownTimerHandle))
 	{
-		if (playerReference->bStandardWeaponActive == true)
-			GetWorldTimerManager().SetTimer(shootCooldownTimerHandle, playerReference->singleShotCooldown, false);
+		if (playerReference->bRifleActive == true)
+			GetWorldTimerManager().SetTimer(shootCooldownTimerHandle, playerReference->rifleCooldown, false);
 		else
 			GetWorldTimerManager().SetTimer(shootCooldownTimerHandle, playerReference->shotgunCooldown, false);
 

@@ -13,6 +13,9 @@ class TINYDOCTORTEST_API AVirus : public AEnemy
 {
 	GENERATED_BODY()
 	
+private:
+	virtual bool TakeDamageWithKnockback(const float amount, const FVector damageOrigin, const float horizontalKnockback, const float verticalKnockback) override;
+
 protected:
 
 	// Called when the game starts or when spawned

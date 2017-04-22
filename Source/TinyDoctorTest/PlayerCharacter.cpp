@@ -26,30 +26,13 @@ void APlayerCharacter::BeginPlay()
 	// Finds components on the Blueprint Class
 	springArm = FindComponentByClass<USpringArmComponent>();
 
-	SetInitialStats();
+	Cast<UStandardGameInstance>(GetWorld()->GetGameInstance())->SetPlayerStats(health, maxHealth, ammo, maxAmmo);
 }
 
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-}
-
-void APlayerCharacter::SetInitialStats()
-{
-	UStandardGameInstance* gameInstanceRef = Cast<UStandardGameInstance>(GetWorld()->GetGameInstance());
-	if (gameInstanceRef->bRememberStats == true)
-	{
-		health = gameInstanceRef->playerHealth;
-		maxHealth = gameInstanceRef->playerMaxHealth;
-		ammo = gameInstanceRef->playerAmmo;
-		maxAmmo = gameInstanceRef->playerMaxAmmo;
-	}
-	else
-	{
-		maxAmmo = ammo;
-		gameInstanceRef->StartGame();
-	}
 }
 
 void APlayerCharacter::MoveForward(const float value)
@@ -68,25 +51,29 @@ void APlayerCharacter::MoveRight(const float value)
 
 void APlayerCharacter::Shoot()
 {
-	if (bStandardWeaponActive)
-		ShootStandard();
-	else
-		Shotgun();
+	if (IsRifleActive() && GetAmmo() > rifleCost)
+	{
+		ShootRifle();
+		DecreaseAmmo(rifleCost);
+	}
+	else if (!IsRifleActive() && GetAmmo() > shotgunCost)
+	{
+		ShootShotgun();
+		DecreaseAmmo(shotgunCost);
+	}
 }
 
-void APlayerCharacter::ShootStandard()
+void APlayerCharacter::ShootRifle()
 {
-	const float SpawnOffset = 100.f;
+	constexpr float SpawnOffset = 125.f;
 
 	FVector direction = GetActorForwardVector();
 	FVector position = GetActorLocation() + (direction * SpawnOffset);
 
-	AProjectile* actorReference = GetWorld()->SpawnActor<AProjectile>(projectile, position, direction.Rotation());
-
-	ammo -= singleShotCost;
+	AProjectile* projectileReference = GetWorld()->SpawnActor<AProjectile>(projectileActor, position, direction.Rotation());
 }
 
-void APlayerCharacter::Shotgun_Implementation()
+void APlayerCharacter::ShootShotgun_Implementation()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Shotgun-method is not intended to be used in C++. Use a BP version of this method."));
 }
@@ -110,7 +97,7 @@ const int APlayerCharacter::GetAmmo() { return ammo; }
 
 const int APlayerCharacter::GetMaxAmmo() { return maxAmmo; }
 
-const bool APlayerCharacter::GetActiveWeapon() { return bStandardWeaponActive; }
+const bool APlayerCharacter::IsRifleActive() { return bRifleActive; }
 
 int APlayerCharacter::ChangeAmmo(const int amount)
 {
@@ -127,7 +114,6 @@ int APlayerCharacter::ChangeAmmo(const int amount)
 int APlayerCharacter::DecreaseAmmo(const int amount)
 {
 	ChangeAmmo(-amount);
-
 	return ammo;
 }
 

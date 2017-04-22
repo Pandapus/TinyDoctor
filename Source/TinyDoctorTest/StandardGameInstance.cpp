@@ -3,12 +3,26 @@
 #include "TinyDoctorTest.h"
 #include "StandardGameInstance.h"
 
-void UStandardGameInstance::StartGame()
+void UStandardGameInstance::SetPlayerStats(float &health, float &maxHealth, int &ammo, int &maxAmmo)
 {
-	playerMaxHealth = playerHealth;
-	playerMaxAmmo = playerAmmo;
+	if (bRememberStats == true)
+	{
+		health = savedHealth;
+		maxHealth = savedMaxHealth;
+		ammo = savedAmmo;
+		maxAmmo = savedMaxAmmo;
+	}
+	else
+	{
+		maxAmmo = ammo;
 
-	bRememberStats = true;
+		savedHealth = health;
+		savedMaxHealth = maxHealth;
+		savedAmmo = ammo;
+		savedMaxAmmo = maxAmmo;
+
+		bRememberStats = true;
+	}
 }
 
 

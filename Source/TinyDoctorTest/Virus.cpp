@@ -17,6 +17,12 @@ void AVirus::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+bool AVirus::TakeDamageWithKnockback(const float amount, const FVector damageOrigin, const float horizontalKnockback, const float verticalKnockback)
+{
+	Destroy();
+	return true;
+}
+
 void AVirus::Constructor(AActor* virusSpawnerRef)
 {
 	//virusSpawner = Cast<AVirusSpawner>(virusSpawnerRef);
