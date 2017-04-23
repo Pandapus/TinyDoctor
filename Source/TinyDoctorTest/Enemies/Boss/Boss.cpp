@@ -3,11 +3,20 @@
 #include "TinyDoctorTest.h"
 #include "Boss.h"
 
+#include "StandardGameMode.h"
+
+void ABoss::Destroyed()
+{
+	Super::Destroyed();
+
+	Cast<AStandardGameMode>(GetWorld()->GetAuthGameMode())->GameWon();
+}
+
 bool ABoss::TakeDamageWithKnockback(const float amount, const FVector damageOrigin, const float horizontalKnockback, const float verticalKnockback)
 {
-	if (bInvulnerable == false)
+	if (IsInvulnerable() == false)
 	{
-		if (ChangeHealth(-amount))
+		if (ChangeHealth(-amount) == true)
 			return true;
 		else
 			return false;
@@ -16,5 +25,5 @@ bool ABoss::TakeDamageWithKnockback(const float amount, const FVector damageOrig
 	return false;
 }
 
-const bool ABoss::GetInvulnerable() { return bInvulnerable; }
+void ABoss::Activate_Implementation() {}
 

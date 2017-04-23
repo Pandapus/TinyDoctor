@@ -12,7 +12,9 @@ void AEnemy::BeginPlay()
 
 	// In case the actor is spawned at runtime. The controller will then be spawned first and unable to get it's characterReference
 	// using BeginPlay.
-	Cast<ABaseAIController>(GetController())->SetCharacterReference();
+	ABaseAIController* controllerReference = Cast<ABaseAIController>(GetController());
+	if (controllerReference != nullptr)
+		controllerReference->SetCharacterReference();
 }
 
 // Called every frame

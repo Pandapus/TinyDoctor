@@ -3,7 +3,7 @@
 #include "TinyDoctorTest.h"
 #include "Virus.h"
 
-#include "BaseAIController.h"
+#include "VirusAIController.h"
 
 // Called when the game starts or when spawned
 void AVirus::BeginPlay()
@@ -23,15 +23,13 @@ bool AVirus::TakeDamageWithKnockback(const float amount, const FVector damageOri
 	return true;
 }
 
-void AVirus::Constructor(AActor* virusSpawnerRef)
+void AVirus::Destroyed()
 {
-	//virusSpawner = Cast<AVirusSpawner>(virusSpawnerRef);
-}
+	AVirusAIController* controllerRef = Cast<AVirusAIController>(GetController());
+	if (controllerRef != nullptr)
+		controllerRef->RemoveSelfFromSpawnerArray();
 
-void AVirus::StartChasing()
-{
-	//virusSpawner->ChasePlayer();
+	Super::Destroyed();
 }
-
 
 

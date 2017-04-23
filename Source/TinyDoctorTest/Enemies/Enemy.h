@@ -21,7 +21,7 @@ protected:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI")
 		float detectionRadius = 1500.f;
 	
 public:

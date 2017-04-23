@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Virus.h"
+#include "VirusAIController.h"
 
 #include "GameFramework/Actor.h"
 #include "VirusSpawner.generated.h"
@@ -22,24 +22,21 @@ private:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	//void SpawnVirus();
+	void SpawnVirus();
 
-public:
-	/*
-	UPROPERTY(EditAnywhere)
-		TSubclassOf<class AVirus> virus;
-		*/
+	TArray<AVirusAIController*> virusArray;
+	void RemoveItemFromArray(AVirusAIController* itemToRemove);
 
-	UPROPERTY(BlueprintReadWrite)
-		TArray<AVirus*> virusArray;
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = "Required variables")
+		TSubclassOf<class AVirus> virusToSpawn;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Variables")
 		int numberToSpawn = 3;
-	
+
 	UFUNCTION(BlueprintCallable)
 		void ChasePlayer();
-	/*
-	void RemoveActorFromArray(AActor* virusActor);
-	void AddActorToArray(AActor* virusActor);
-	*/
+	
+public:
+	friend class AVirusAIController;
 };

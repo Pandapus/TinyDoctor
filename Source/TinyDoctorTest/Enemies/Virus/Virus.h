@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Enemy.h"
+#include "Enemies/Enemy.h"
 #include "Virus.generated.h"
 
 /**
@@ -16,20 +16,22 @@ class TINYDOCTORTEST_API AVirus : public AEnemy
 private:
 	virtual bool TakeDamageWithKnockback(const float amount, const FVector damageOrigin, const float horizontalKnockback, const float verticalKnockback) override;
 
-protected:
+	virtual void Destroyed() override;
 
+protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Stats")
+		float jumpDistanceThreshold = 500.f;
+	UPROPERTY(EditDefaultsOnly, Category = "Stats")
+		float verticalJumpStrength = 1000.f;
+	UPROPERTY(EditDefaultsOnly, Category = "Stats")
+		float horizontalJumpStrength = 1000.f;
+
 public:
-	// Important to call this function after having spawned the AVirus-actor.
-	void Constructor(AActor* virusSpawner);
-
-	void StartChasing();
-
-	UPROPERTY(BlueprintReadWrite)
-		bool bChasingPlayer = false;
+	friend class AVirusAIController;
 };

@@ -22,7 +22,7 @@ protected:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Required Variables")
 		ABoss* bossReference;
 
 	UFUNCTION(BlueprintNativeEvent)

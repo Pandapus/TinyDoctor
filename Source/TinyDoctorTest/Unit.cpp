@@ -8,7 +8,6 @@ AUnit::AUnit()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 // Called when the game starts or when spawned
@@ -29,27 +28,34 @@ const float AUnit::GetHealth() { return health; }
 
 const float AUnit::GetMaxHealth() { return maxHealth; }
 
+const bool AUnit::IsInvulnerable() { return bInvulnerable; }
+
 bool AUnit::TakeDamageWithKnockback(const float amount, const FVector damageOrigin, float horizontalKnockback, float verticalKnockback)
 {
-	if (ChangeHealth(-amount) == false)
+	if (IsInvulnerable() == false)
 	{
-		FVector pushVector = FVector(GetActorLocation() - damageOrigin);
-		pushVector.Z = 0.f;
-		pushVector.Normalize();
-		pushVector.X *= horizontalKnockback;
-		pushVector.Y *= horizontalKnockback;
-		pushVector.Z = verticalKnockback;
-		LaunchCharacter(pushVector, true, true);
+		if (ChangeHealth(-amount) == false)
+		{
+			FVector pushVector = FVector(GetActorLocation() - damageOrigin);
+			pushVector.Z = 0.f;
+			pushVector.Normalize();
+			pushVector.X *= horizontalKnockback;
+			pushVector.Y *= horizontalKnockback;
+			pushVector.Z = verticalKnockback;
+			LaunchCharacter(pushVector, true, true);
 
-		return false;
+			return false;
+		}
+		else
+			return true;
 	}
-	else
-		return true;
+
+	return false;
 }
 
 bool AUnit::DecreaseHealth(const float amount, float &newHealth)
 {
-	bool bResult = ChangeHealth(-amount);
+	const bool bResult = ChangeHealth(-amount);
 
 	newHealth = GetHealth();
 
@@ -58,7 +64,7 @@ bool AUnit::DecreaseHealth(const float amount, float &newHealth)
 
 bool AUnit::ChangeHealth(const float amount, float &newHealth)
 {
-	bool bResult = ChangeHealth(amount);
+	const bool bResult = ChangeHealth(amount);
 
 	newHealth = GetHealth();
 

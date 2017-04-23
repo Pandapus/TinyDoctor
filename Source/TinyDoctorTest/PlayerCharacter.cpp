@@ -35,6 +35,22 @@ void APlayerCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+bool APlayerCharacter::TakeDamageWithKnockback(const float amount, const FVector damageOrigin, const float horizontalKnockback, const float verticalKnockback)
+{
+	if (Super::TakeDamageWithKnockback(amount, damageOrigin, horizontalKnockback, verticalKnockback) == false)
+	{
+		bInvulnerable = true;
+
+		constexpr float invulnerableLengthInSeconds = 0.1f;
+
+		FTimerHandle invulnerablePeriod;
+		GetWorldTimerManager().SetTimer(invulnerablePeriod, this, &APlayerCharacter::SetInvulnerableToFalse, invulnerableLengthInSeconds);
+	}
+	return false;
+}
+
+void APlayerCharacter::SetInvulnerableToFalse() { bInvulnerable = false; }
+
 void APlayerCharacter::MoveForward(const float value)
 {
 	FVector direction = FVector::ForwardVector * value;
@@ -70,7 +86,7 @@ void APlayerCharacter::ShootRifle()
 	FVector direction = GetActorForwardVector();
 	FVector position = GetActorLocation() + (direction * SpawnOffset);
 
-	AProjectile* projectileReference = GetWorld()->SpawnActor<AProjectile>(projectileActor, position, direction.Rotation());
+	AProjectile* projectileReference = GetWorld()->SpawnActor<AProjectile>(projectileToShoot, position, direction.Rotation());
 }
 
 void APlayerCharacter::ShootShotgun_Implementation()

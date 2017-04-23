@@ -15,16 +15,19 @@ class TINYDOCTORTEST_API ABoss : public AUnit
 	
 private:
 
-	virtual bool TakeDamageWithKnockback(const float amount, const FVector damageOrigin, const float horizontalKnockback, const float verticalKnockback) override;
+	virtual void Destroyed() override;
 
-	bool bInvulnerable = false;
+	virtual bool TakeDamageWithKnockback(const float amount, const FVector damageOrigin, const float horizontalKnockback, const float verticalKnockback) override;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Stats")
 		int numberOfHealthSteps = 3;
 
-	UFUNCTION(BlueprintPure)
-		const bool GetInvulnerable();
+	UPROPERTY(EditAnywhere, Category = "Stats")
+		int amountToSpawnPerSpawner = 2;
+
+	UFUNCTION(BlueprintNativeEvent)
+		void Activate();
 
 
 public:

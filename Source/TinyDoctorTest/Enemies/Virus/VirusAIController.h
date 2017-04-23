@@ -2,7 +2,9 @@
 
 #pragma once
 
-#include "BaseAIController.h"
+#include "Virus.h"
+
+#include "Enemies/BaseAIController.h"
 #include "VirusAIController.generated.h"
 
 /**
@@ -13,12 +15,23 @@ class TINYDOCTORTEST_API AVirusAIController : public ABaseAIController
 {
 	GENERATED_BODY()
 
-protected:
+private:
+	AVirus* characterReference;
+	virtual void SetCharacterReference() override;
+
+	class AVirusSpawner* spawnerReference;
+	void RemoveSelfFromSpawnerArray();
+
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	
 	virtual void PatrolMode() override;
+	FTimerHandle timerMoveToPlayerManager;
+	void StartChaseMode();
 	virtual void ChaseMode() override;
 
+public:
+	friend class AVirusSpawner;
+	friend class AVirus;
 	
 };

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Unit.h"
+#include "Enemy.h"
 
 #include "AIController.h"
 #include "BaseAIController.generated.h"
@@ -30,10 +30,13 @@ protected:
 	// Position at which the enemy spawned on
 	FVector originalPosition;
 
-	const FVector GetVectorToPlayer();
+	// Gets relative vector from controlled enemy to player actor.
+	UFUNCTION(BlueprintPure)
+		const FVector GetVectorToPlayer();
 
 	// Calculates distance from enemy to player
-	const float DistanceToPlayer();
+	UFUNCTION(BlueprintPure)
+		const float DistanceToPlayer();
 
 	enum class AIMode {
 		Patrol,

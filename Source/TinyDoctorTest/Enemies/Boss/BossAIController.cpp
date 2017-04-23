@@ -8,7 +8,7 @@ void ABossAIController::BeginPlay()
 	Super::BeginPlay();
 
 	// Temporary code.
-	constexpr float activateDelay = 0.5f;
+	constexpr float activateDelay = 0.1f;
 	FTimerHandle delayActivation;
 	GetWorldTimerManager().SetTimer(delayActivation, this, &ABossAIController::Activate, activateDelay, false);
 }
@@ -27,6 +27,8 @@ void ABossAIController::SetCharacterReference()
 void ABossAIController::Activate_Implementation()
 {
 	currentHealthStep = characterReference->numberOfHealthSteps;
+
+	characterReference->Activate();
 
 	StartInvulnerableMode();
 }
@@ -65,7 +67,7 @@ void ABossAIController::StartInvulnerableMode()
 	characterReference->bInvulnerable = true;
 
 	for (AMinionSpawner* minionSpawner : spawners)
-		minionSpawner->StartSpawning(amountToSpawnPerSpawner);
+		minionSpawner->StartSpawning(characterReference->amountToSpawnPerSpawner);
 
 	constexpr float minimumInvulnerableTime = 1.f;
 	GetWorld()->GetTimerManager().SetTimer(invulnerableTimerHandle, minimumInvulnerableTime, false);

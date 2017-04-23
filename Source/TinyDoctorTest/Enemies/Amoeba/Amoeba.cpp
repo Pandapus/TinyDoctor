@@ -4,7 +4,6 @@
 #include "Amoeba.h"
 
 #include "AmoebaAIController.h"
-
 #include "PlayerCharacter.h"
 
 AAmoeba::AAmoeba()
@@ -20,8 +19,6 @@ AAmoeba::AAmoeba()
 void AAmoeba::BeginPlay()
 {
 	Super::BeginPlay();
-
-	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AAmoeba::OnHit);
 }
 
 void AAmoeba::Tick(float DeltaTime)
@@ -40,11 +37,11 @@ bool AAmoeba::TakeDamageWithKnockback(const float amount, const FVector damageOr
 		return true;
 }
 
-void AAmoeba::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void AAmoeba::Hit(AActor* OtherActor)
 {
 	static FTimerHandle timerDelayAfterHit;
 	
-	if (OtherActor->IsA(APlayerCharacter::StaticClass()) && !GetWorldTimerManager().IsTimerActive(timerDelayAfterHit))
+	if (!GetWorldTimerManager().IsTimerActive(timerDelayAfterHit))
 	{
 		Cast<AUnit>(OtherActor)->TakeDamageWithKnockback(touchDamage, GetActorLocation());
 

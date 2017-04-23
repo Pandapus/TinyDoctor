@@ -3,7 +3,7 @@
 #include "TinyDoctorTest.h"
 #include "VirusSpawner.h"
 
-#include "BaseAIController.h"
+#include "Virus.h"
 
 // Sets default values
 AVirusSpawner::AVirusSpawner()
@@ -17,7 +17,7 @@ void AVirusSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	//SpawnVirus();
+	SpawnVirus();
 }
 
 // Called every frame
@@ -26,7 +26,13 @@ void AVirusSpawner::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-/*
+void AVirusSpawner::RemoveItemFromArray(AVirusAIController* itemToRemove)
+{
+	virusArray.RemoveSingleSwap(itemToRemove);
+	if (virusArray.Num() <= 0)
+		Destroy();
+}
+
 void AVirusSpawner::SpawnVirus()
 {
 	for (int i = 1; i <= numberToSpawn; i++)
@@ -35,7 +41,7 @@ void AVirusSpawner::SpawnVirus()
 		const FRotator spawnDirection = FRotator(0.f, randomYawRotation, 0.f);
 
 		FActorSpawnParameters spawnParameter = FActorSpawnParameters();
-		spawnParameter.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		spawnParameter.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
 		constexpr float spawnRadius = 200.f;
 		FNavLocation spawnLocationOnNavMesh = FNavLocation();
@@ -43,30 +49,20 @@ void AVirusSpawner::SpawnVirus()
 		FVector spawnLocation = spawnLocationOnNavMesh.Location;
 		spawnLocation.Z += 100.f;
 
-		AVirus* virusActor = GetWorld()->SpawnActor<AVirus>(virus, spawnLocation, spawnDirection, spawnParameter);
-		virusActor->Constructor(this);
+		AVirus* virusActor = GetWorld()->SpawnActor<AVirus>(virusToSpawn, spawnLocation, spawnDirection, spawnParameter);
+		if (virusActor != nullptr)
+		{
+			AVirusAIController* controllerRef = Cast<AVirusAIController>(virusActor->GetController());
+			controllerRef->spawnerReference = this;
+			virusArray.Add(controllerRef);
+		}
 	}
 }
-*/
 
 void AVirusSpawner::ChasePlayer()
 {
-	AActor* playerRef = GetWorld()->GetFirstPlayerController()->GetPawn();
-	for (AVirus* virusActor : virusArray)
+	for (AVirusAIController* controllerRef : virusArray)
 	{
-		virusActor->bChasingPlayer = true;
-		GetWorld()->GetNavigationSystem()->SimpleMoveToActor(virusActor->GetController(), playerRef);
+		controllerRef->StartChaseMode();
 	}
 }
-
-/*
-void AVirusSpawner::RemoveActorFromArray(AActor* virusActor)
-{
-	//virusArray.Remove(virusActor);
-}
-
-void AVirusSpawner::AddActorToArray(AActor* virusActor)
-{
-	//virusArray.Add(virusActor);
-}
-*/

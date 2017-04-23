@@ -3,14 +3,22 @@
 #include "TinyDoctorTest.h"
 #include "AmoebaAIController.h"
 
-float runSpeed;
+// Original MaxWalkSpeed of the character being controlled
+	float walkSpeed;
+// Run Speed set in the AAmoeba-actor
+	float runSpeed;
+
+	FVector roamingTargetLocation = FVector::ZeroVector;
+
+	FTimerHandle waitingTimerHandle;
+	FTimerHandle intervalCallSafetyTimerHandle;
 
 void AAmoebaAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// CharacterReference is not nullptr if the enemy was placed.
-	// In other words, runs only if placed
+	// CharacterReference is not nullptr if the enemy was placed by Editor.
+	// In other words, runs only if placed by Editor.
 	if (characterReference != nullptr)
 	{
 		StartPatrolMode();
@@ -34,9 +42,7 @@ void AAmoebaAIController::SetCharacterReference()
 }
 
 void AAmoebaAIController::StartPatrolMode()
-{
-	GetWorldTimerManager().ClearTimer(timerMoveToPlayerInterval);
-
+{	
 	aiMode = AIMode::Patrol;
 	characterReference->GetCharacterMovement()->MaxWalkSpeed = walkSpeed;
 	PickNewRoamingTargetAndMoveThere();
@@ -77,7 +83,7 @@ bool AAmoebaAIController::CanEnemySeePlayer()
 		float degreeDifference = FMath::Abs(FMath::RadiansToDegrees(FMath::Acos(cosineValue)));
 		if (degreeDifference <= characterReference->fieldOfView / 2.f)
 		{
-			// Line-traces to see if the enemy has a clear line of sight
+			// Line-traces to see if we have clear line of sight to the player.
 			FHitResult hitResult;
 			const FVector lineTraceStart = characterReference->GetActorLocation();
 			const FVector lineTraceEnd = playerReference->GetActorLocation();
@@ -93,30 +99,32 @@ bool AAmoebaAIController::CanEnemySeePlayer()
 			}
 		}
 	}
-
 	return false;
 }
 
 void AAmoebaAIController::Roaming()
 {
 	// Checks if the enemy is currently waiting before moving to a new point.
-	if (!GetWorldTimerManager().IsTimerActive(delayTimerHandle))
+	if (!GetWorldTimerManager().IsTimerActive(waitingTimerHandle))
 	{
 		// Controls how far away the enemy must be from its targetLocation before it starts the waiting-timer.
 		// NB! Be careful lowering this, might stop roaming from working
-		constexpr float reachedTargetThreshold = 175.f;
+		constexpr float reachedTargetThreshold = 250.f;
 
-		float distanceToTarget = FVector(targetPosition - characterReference->GetActorLocation()).Size();
+		FVector vectorToTarget = FVector(roamingTargetLocation - characterReference->GetActorLocation());
+		vectorToTarget.Z = 0.f;
+
+		float distanceToTarget = vectorToTarget.Size();
 		if (distanceToTarget <= reachedTargetThreshold)
 		{
-			GetWorldTimerManager().ClearTimer(timerPickNewRoamingTargetInterval);
+			//GetWorldTimerManager().ClearTimer(intervalCallSafetyTimerHandle);
 
 			constexpr float minTimerLength = 0.5f;
 			constexpr float maxTimerLength = 2.f;
-			float timerLength = FMath::FRandRange(minTimerLength, maxTimerLength);
+			float waitingLength = FMath::FRandRange(minTimerLength, maxTimerLength);
 
 			// Waits and picks new roaming target.
-			GetWorldTimerManager().SetTimer(delayTimerHandle, this, &AAmoebaAIController::PickNewRoamingTargetAndMoveThere, timerLength, false);
+			GetWorldTimerManager().SetTimer(waitingTimerHandle, this, &AAmoebaAIController::PickNewRoamingTargetAndMoveThere, waitingLength, false);
 		}
 	}
 }
@@ -125,23 +133,21 @@ void AAmoebaAIController::PickNewRoamingTargetAndMoveThere()
 {
 	FNavLocation targetPointOnNavMesh;
 	GetWorld()->GetNavigationSystem()->GetRandomReachablePointInRadius(originalPosition, characterReference->patrolRadius, targetPointOnNavMesh);
-	targetPosition = targetPointOnNavMesh.Location;
+	roamingTargetLocation = targetPointOnNavMesh.Location;
 
-	GetWorld()->GetNavigationSystem()->SimpleMoveToLocation(this, targetPosition);
+	GetWorld()->GetNavigationSystem()->SimpleMoveToLocation(this, roamingTargetLocation);
 
-	// Picks a new Roaming Target every x amount of seconds in case the path of the enemy is obscured and cannot reach its target location.
-	constexpr float pickNewRoamingTargetInterval = 5.f;
-	GetWorldTimerManager().SetTimer(timerPickNewRoamingTargetInterval, this, &AAmoebaAIController::PickNewRoamingTargetAndMoveThere, pickNewRoamingTargetInterval, true);
+	// Picks a new Roaming Target every x amount of seconds in case the path of our character is obscured, rendering us unable to reach our target destination.
+	constexpr float maximumWalkTime = 7.5f;
+	GetWorldTimerManager().SetTimer(intervalCallSafetyTimerHandle, this, &AAmoebaAIController::PickNewRoamingTargetAndMoveThere, maximumWalkTime, true);
 }
 
 void AAmoebaAIController::StartChaseMode()
 {
-	GetWorldTimerManager().ClearTimer(timerPickNewRoamingTargetInterval);
-
 	// Chase Mode must last for x seconds before checking to enter another mode. 
 	// This is to acommodate for the enemy entering Chase Mode when taking damage and not immdiately going back to Patrol Mode.
 	constexpr float minChaseModeDuration = 5.f;
-	GetWorldTimerManager().SetTimer(delayTimerHandle, minChaseModeDuration, false);
+	GetWorldTimerManager().SetTimer(waitingTimerHandle, minChaseModeDuration, false);
 
 	aiMode = AIMode::Chase;
 	characterReference->GetCharacterMovement()->MaxWalkSpeed = runSpeed;
@@ -149,8 +155,8 @@ void AAmoebaAIController::StartChaseMode()
 	MoveToPlayer();
 
 	// Calls MoveToPlayer() every x seconds in case the last MoveTo-command stops working.
-	constexpr float callMoveToPlayerInterval = 5.f;
-	GetWorldTimerManager().SetTimer(timerMoveToPlayerInterval, this, &AAmoebaAIController::MoveToPlayer, callMoveToPlayerInterval, true);
+	constexpr float callMoveToPlayerInterval = 3.f;
+	GetWorldTimerManager().SetTimer(intervalCallSafetyTimerHandle, this, &AAmoebaAIController::MoveToPlayer, callMoveToPlayerInterval, true);
 }
 
 void AAmoebaAIController::ChaseMode()
@@ -166,9 +172,16 @@ void AAmoebaAIController::ChaseMode()
 	*/
 
 	// When close enough to the player, the enemy will move manually in order not to stop in front of the player.
-	const float manualMovementThreshold = 200.f;
+	constexpr float manualMovementThreshold = 200.f;
 	if (DistanceToPlayer() <= manualMovementThreshold)
 	{
 		characterReference->AddMovementInput(GetVectorToPlayer());
+	}
+
+	if (DistanceToPlayer() <= characterReference->hitRange)
+	{
+		GetWorldTimerManager().ClearTimer(intervalCallSafetyTimerHandle);
+		StopMovement();
+		characterReference->Hit(playerReference);
 	}
 }

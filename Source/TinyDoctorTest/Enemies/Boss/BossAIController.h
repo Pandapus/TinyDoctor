@@ -2,10 +2,10 @@
 
 #pragma once
 
-#include "Boss.h"
-#include "MinionSpawner.h"
+#include "Enemies/Boss/Boss.h"
+#include "Enemies/Boss/MinionSpawner.h"
 
-#include "BaseAIController.h"
+#include "Enemies/BaseAIController.h"
 #include "BossAIController.generated.h"
 
 /**
@@ -46,12 +46,6 @@ private:
 protected:
 	UPROPERTY(BlueprintReadOnly)
 		ABoss* characterReference;
-
-	UPROPERTY(EditAnywhere)
-		int numberOfHealthSteps = 3;
-
-	UPROPERTY(EditAnywhere)
-		int amountToSpawnPerSpawner = 1;
 
 	UPROPERTY(BlueprintReadWrite)
 		TArray<AActor*> spawnedEnemies;
