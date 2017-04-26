@@ -81,7 +81,7 @@ void APlayerCharacter::Shoot()
 
 void APlayerCharacter::ShootRifle()
 {
-	constexpr float SpawnOffset = 125.f;
+	constexpr float SpawnOffset = 150.f;
 
 	FVector direction = GetActorForwardVector();
 	FVector position = GetActorLocation() + (direction * SpawnOffset);
