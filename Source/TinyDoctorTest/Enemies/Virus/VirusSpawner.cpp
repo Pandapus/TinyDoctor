@@ -10,6 +10,7 @@ AVirusSpawner::AVirusSpawner()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = false;
 }
 
 // Called when the game starts or when spawned
@@ -43,7 +44,7 @@ void AVirusSpawner::SpawnVirus()
 		FActorSpawnParameters spawnParameter = FActorSpawnParameters();
 		spawnParameter.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
-		constexpr float spawnRadius = 200.f;
+		constexpr float spawnRadius = 250.f;
 		FNavLocation spawnLocationOnNavMesh = FNavLocation();
 		GetWorld()->GetNavigationSystem()->GetRandomPointInNavigableRadius(GetActorLocation(), spawnRadius, spawnLocationOnNavMesh);
 		FVector spawnLocation = spawnLocationOnNavMesh.Location;
@@ -61,7 +62,7 @@ void AVirusSpawner::SpawnVirus()
 
 void AVirusSpawner::ChasePlayer()
 {
-	for (AVirusAIController* controllerRef : virusArray)
+	for (auto controllerRef : virusArray)
 	{
 		controllerRef->StartChaseMode();
 	}

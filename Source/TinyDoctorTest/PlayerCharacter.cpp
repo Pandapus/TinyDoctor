@@ -11,11 +11,13 @@
 APlayerCharacter::APlayerCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	bUseControllerRotationYaw = false;
 
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->MaxWalkSpeed = 1000.f;
 }
 
 // Called when the game starts or when spawned
@@ -67,15 +69,19 @@ void APlayerCharacter::MoveRight(const float value)
 
 void APlayerCharacter::Shoot()
 {
-	if (IsRifleActive() && GetAmmo() > rifleCost)
+	static FTimerHandle shootCooldownTimerHandle;
+
+	if (IsRifleActive() && GetAmmo() >= rifleCost)
 	{
 		ShootRifle();
 		DecreaseAmmo(rifleCost);
+		GetWorldTimerManager().SetTimer(shootCooldownTimerHandle, rifleCooldown, false);
 	}
-	else if (!IsRifleActive() && GetAmmo() > shotgunCost)
+	else if (!IsRifleActive() && GetAmmo() >= shotgunCost)
 	{
 		ShootShotgun();
 		DecreaseAmmo(shotgunCost);
+		GetWorldTimerManager().SetTimer(shootCooldownTimerHandle, shotgunCooldown, false);
 	}
 }
 

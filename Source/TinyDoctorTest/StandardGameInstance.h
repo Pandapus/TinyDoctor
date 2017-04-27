@@ -14,11 +14,13 @@ class TINYDOCTORTEST_API UStandardGameInstance : public UGameInstance
 	GENERATED_BODY()
 	
 private:
-	bool bRememberStats = false;
 
 	void SetPlayerStats(float &playerHealth, float &playerMaxHealth, int &playerAmmo, int &playerMaxAmmo);
 
 protected:
+	UPROPERTY(BlueprintReadWrite)
+		bool bRememberStats = false;
+
 	UPROPERTY(BlueprintReadWrite)
 		float savedHealth = 0.f;
 	float savedMaxHealth = 0.f;

@@ -16,6 +16,8 @@ class TINYDOCTORTEST_API AAmoebaAIController : public ABaseAIController
 	GENERATED_BODY()
 
 protected:
+	AAmoebaAIController();
+
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
@@ -27,6 +29,10 @@ private:
 	//
 	// Methods that control the AI
 	//
+
+	
+	FTimerHandle waitingTimerHandle;
+	FTimerHandle intervalCallSafetyTimerHandle;
 
 	// Patrol Mode
 	void StartPatrolMode();

@@ -51,12 +51,12 @@ void ABossAIController::StartActiveMode()
 	aiMode = AIMode::Active;
 	characterReference->bInvulnerable = false;
 	currentHealthStep--;
+	activeTargetHealth = (characterReference->GetMaxHealth() / characterReference->numberOfHealthSteps) * (currentHealthStep);
 }
 
 void ABossAIController::Active()
 {
-	const float targetHealth = (characterReference->GetMaxHealth() / characterReference->numberOfHealthSteps) * (currentHealthStep);
-	if (characterReference->GetHealth() <= targetHealth)
+	if (characterReference->GetHealth() <= activeTargetHealth)
 		StartInvulnerableMode();
 }
 
@@ -83,10 +83,10 @@ void ABossAIController::Invulnerable()
 			return;
 		}
 
-		for (int i = 0; i < spawnedEnemies.Num(); i++)
+		for (auto enemy : spawnedEnemies)
 		{
-			if (spawnedEnemies[i]->IsActorBeingDestroyed() == true)
-				spawnedEnemies.RemoveSingleSwap(spawnedEnemies[i]);
+			if (enemy->IsActorBeingDestroyed() == true)
+				spawnedEnemies.RemoveSingleSwap(enemy);
 		}
 	}
 }

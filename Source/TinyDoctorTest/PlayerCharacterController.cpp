@@ -14,6 +14,9 @@ FVector previousMousePosition = FVector::ZeroVector;
 
 APlayerCharacterController::APlayerCharacterController()
 {
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+
 	bShowMouseCursor = true;
 }
 
@@ -92,17 +95,7 @@ void APlayerCharacterController::MoveRight(const float value)
 
 void APlayerCharacterController::Shoot()
 {
-	static FTimerHandle shootCooldownTimerHandle;
-
-	if (playerReference->GetAmmo() > 0 && !GetWorldTimerManager().IsTimerActive(shootCooldownTimerHandle))
-	{
-		if (playerReference->bRifleActive == true)
-			GetWorldTimerManager().SetTimer(shootCooldownTimerHandle, playerReference->rifleCooldown, false);
-		else
-			GetWorldTimerManager().SetTimer(shootCooldownTimerHandle, playerReference->shotgunCooldown, false);
-
-		playerReference->Shoot();
-	}
+	playerReference->Shoot();	
 }
 
 const bool APlayerCharacterController::CheckForMouseMovement()

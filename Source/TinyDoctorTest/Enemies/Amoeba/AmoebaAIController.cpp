@@ -10,8 +10,11 @@
 
 	FVector roamingTargetLocation = FVector::ZeroVector;
 
-	FTimerHandle waitingTimerHandle;
-	FTimerHandle intervalCallSafetyTimerHandle;
+AAmoebaAIController::AAmoebaAIController()
+{
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+}
 
 void AAmoebaAIController::BeginPlay()
 {
@@ -117,7 +120,7 @@ void AAmoebaAIController::Roaming()
 		float distanceToTarget = vectorToTarget.Size();
 		if (distanceToTarget <= reachedTargetThreshold)
 		{
-			//GetWorldTimerManager().ClearTimer(intervalCallSafetyTimerHandle);
+			GetWorldTimerManager().ClearTimer(intervalCallSafetyTimerHandle);
 
 			constexpr float minTimerLength = 0.5f;
 			constexpr float maxTimerLength = 2.f;
@@ -138,7 +141,7 @@ void AAmoebaAIController::PickNewRoamingTargetAndMoveThere()
 	GetWorld()->GetNavigationSystem()->SimpleMoveToLocation(this, roamingTargetLocation);
 
 	// Picks a new Roaming Target every x amount of seconds in case the path of our character is obscured, rendering us unable to reach our target destination.
-	constexpr float maximumWalkTime = 7.5f;
+	constexpr float maximumWalkTime = 5.f;
 	GetWorldTimerManager().SetTimer(intervalCallSafetyTimerHandle, this, &AAmoebaAIController::PickNewRoamingTargetAndMoveThere, maximumWalkTime, true);
 }
 

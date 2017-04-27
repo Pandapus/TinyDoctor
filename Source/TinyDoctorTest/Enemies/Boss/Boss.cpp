@@ -7,9 +7,11 @@
 
 void ABoss::Destroyed()
 {
-	Super::Destroyed();
+	auto gameModeRef = Cast<AStandardGameMode>(GetWorld()->GetAuthGameMode());
+	if (gameModeRef != nullptr)
+		gameModeRef->GameWon();
 
-	Cast<AStandardGameMode>(GetWorld()->GetAuthGameMode())->GameWon();
+	Super::Destroyed();
 }
 
 bool ABoss::TakeDamageWithKnockback(const float amount, const FVector damageOrigin, const float horizontalKnockback, const float verticalKnockback)

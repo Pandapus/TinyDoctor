@@ -26,6 +26,7 @@ private:
 	TArray<AMinionSpawner*> spawners;
 
 	int currentHealthStep;
+	float activeTargetHealth;
 
 	enum class AIMode {
 		Inactive,

@@ -16,6 +16,7 @@ class TINYDOCTORTEST_API ABaseAIController : public AAIController
 	GENERATED_BODY()
 	
 protected:
+	ABaseAIController();
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;

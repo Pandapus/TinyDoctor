@@ -14,6 +14,7 @@ class TINYDOCTORTEST_API AEnemy : public AUnit
 	GENERATED_BODY()
 	
 protected:
+	AEnemy();
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

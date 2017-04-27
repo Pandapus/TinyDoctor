@@ -15,6 +15,8 @@ class TINYDOCTORTEST_API AStandardGameMode : public AGameModeBase
 	
 public:
 
+	AStandardGameMode();
+
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 		void PauseGame();
 
