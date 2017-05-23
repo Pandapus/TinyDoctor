@@ -36,6 +36,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 		float patrolRadius = 750.f;
 
+	// Function for when the amoeba hits the player.
 	void Hit(AActor* OtherActor);
 
 public:

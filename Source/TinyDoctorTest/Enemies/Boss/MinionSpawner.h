@@ -22,6 +22,7 @@ protected:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// Contains reference to the boss-actor that controls it. Must be set in each instance.
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Required Variables")
 		ABoss* bossReference;
 

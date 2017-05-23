@@ -9,7 +9,7 @@
 AVirusSpawner::AVirusSpawner()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 }
 
@@ -27,7 +27,7 @@ void AVirusSpawner::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AVirusSpawner::RemoveItemFromArray(AVirusAIController* itemToRemove)
+void AVirusSpawner::RemoveItemFromArray(AVirusAIController* const &itemToRemove)
 {
 	virusArray.RemoveSingleSwap(itemToRemove);
 	if (virusArray.Num() <= 0)
@@ -44,13 +44,18 @@ void AVirusSpawner::SpawnVirus()
 		FActorSpawnParameters spawnParameter = FActorSpawnParameters();
 		spawnParameter.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
+		// Consider changing to automatically choose good radius depending on amount to spawn.
 		constexpr float spawnRadius = 250.f;
+
+		// Picks random location on Navmesh (within radius) to choose where to spawn.
 		FNavLocation spawnLocationOnNavMesh = FNavLocation();
 		GetWorld()->GetNavigationSystem()->GetRandomPointInNavigableRadius(GetActorLocation(), spawnRadius, spawnLocationOnNavMesh);
 		FVector spawnLocation = spawnLocationOnNavMesh.Location;
 		spawnLocation.Z += 100.f;
 
-		AVirus* virusActor = GetWorld()->SpawnActor<AVirus>(virusToSpawn, spawnLocation, spawnDirection, spawnParameter);
+		FTransform actorTransform = FTransform(spawnDirection, spawnLocation);
+
+		AVirus* virusActor = GetWorld()->SpawnActor<AVirus>(virusToSpawn, actorTransform, spawnParameter);
 		if (virusActor != nullptr)
 		{
 			AVirusAIController* controllerRef = Cast<AVirusAIController>(virusActor->GetController());

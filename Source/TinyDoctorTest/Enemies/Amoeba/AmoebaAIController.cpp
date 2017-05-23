@@ -8,6 +8,7 @@
 // Run Speed set in the AAmoeba-actor
 	float runSpeed;
 
+// Contains the coordinates for where the amoeba is roaming towards.
 	FVector roamingTargetLocation = FVector::ZeroVector;
 
 AAmoebaAIController::AAmoebaAIController()
@@ -23,14 +24,14 @@ void AAmoebaAIController::BeginPlay()
 	// CharacterReference is not nullptr if the enemy was placed by Editor.
 	// In other words, runs only if placed by Editor.
 	if (characterReference != nullptr)
-	{
 		StartPatrolMode();
-	}
 }
 
 void AAmoebaAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	AI();
 }
 
 void AAmoebaAIController::SetCharacterReference()
@@ -41,6 +42,19 @@ void AAmoebaAIController::SetCharacterReference()
 		characterReference = Cast<AAmoeba>(Super::characterReference);
 		walkSpeed = characterReference->GetCharacterMovement()->MaxWalkSpeed;
 		runSpeed = characterReference->runSpeed;
+	}
+}
+
+void AAmoebaAIController::AI()
+{
+	switch (aiMode)
+	{
+		case AIMode::Patrol:
+			PatrolMode();
+			break;
+		case AIMode::Chase:
+			ChaseMode();
+			break;
 	}
 }
 
@@ -81,9 +95,9 @@ bool AAmoebaAIController::CanEnemySeePlayer()
 		relativeVector.Z = 0.f;
 
 		// Calculates the difference in degrees between the enemy's forward vector and relativeVector using Dot Product (Skalar)
-		float dotProduct = FVector::DotProduct(characterReference->GetActorForwardVector(), relativeVector);
-		float cosineValue = dotProduct / relativeVector.Size();
-		float degreeDifference = FMath::Abs(FMath::RadiansToDegrees(FMath::Acos(cosineValue)));
+		const float dotProduct = FVector::DotProduct(characterReference->GetActorForwardVector(), relativeVector);
+		const float cosineValue = dotProduct / relativeVector.Size();
+		const float degreeDifference = FMath::Abs(FMath::RadiansToDegrees(FMath::Acos(cosineValue)));
 		if (degreeDifference <= characterReference->fieldOfView / 2.f)
 		{
 			// Line-traces to see if we have clear line of sight to the player.
@@ -112,7 +126,7 @@ void AAmoebaAIController::Roaming()
 	{
 		// Controls how far away the enemy must be from its targetLocation before it starts the waiting-timer.
 		// NB! Be careful lowering this, might stop roaming from working
-		constexpr float reachedTargetThreshold = 250.f;
+		constexpr float reachedTargetThreshold = 200.f;
 
 		FVector vectorToTarget = FVector(roamingTargetLocation - characterReference->GetActorLocation());
 		vectorToTarget.Z = 0.f;
@@ -120,11 +134,9 @@ void AAmoebaAIController::Roaming()
 		float distanceToTarget = vectorToTarget.Size();
 		if (distanceToTarget <= reachedTargetThreshold)
 		{
-			GetWorldTimerManager().ClearTimer(intervalCallSafetyTimerHandle);
-
 			constexpr float minTimerLength = 0.5f;
 			constexpr float maxTimerLength = 2.f;
-			float waitingLength = FMath::FRandRange(minTimerLength, maxTimerLength);
+			const float waitingLength = FMath::FRandRange(minTimerLength, maxTimerLength);
 
 			// Waits and picks new roaming target.
 			GetWorldTimerManager().SetTimer(waitingTimerHandle, this, &AAmoebaAIController::PickNewRoamingTargetAndMoveThere, waitingLength, false);
@@ -136,10 +148,11 @@ void AAmoebaAIController::PickNewRoamingTargetAndMoveThere()
 {
 	FNavLocation targetPointOnNavMesh;
 	GetWorld()->GetNavigationSystem()->GetRandomReachablePointInRadius(originalPosition, characterReference->patrolRadius, targetPointOnNavMesh);
+	
 	roamingTargetLocation = targetPointOnNavMesh.Location;
 
 	GetWorld()->GetNavigationSystem()->SimpleMoveToLocation(this, roamingTargetLocation);
-
+	
 	// Picks a new Roaming Target every x amount of seconds in case the path of our character is obscured, rendering us unable to reach our target destination.
 	constexpr float maximumWalkTime = 5.f;
 	GetWorldTimerManager().SetTimer(intervalCallSafetyTimerHandle, this, &AAmoebaAIController::PickNewRoamingTargetAndMoveThere, maximumWalkTime, true);
@@ -164,16 +177,6 @@ void AAmoebaAIController::StartChaseMode()
 
 void AAmoebaAIController::ChaseMode()
 {
-	/*
-	// Check whether to start Patrol Mode.
-	// The timer makes sure the ChaseMode has lasted x amount of seconds minimum.
-	if (!GetWorldTimerManager().IsTimerActive(delayTimerHandle) && DistanceToPlayer() > characterReference->detectionRadius)
-	{
-		StartPatrolMode();
-		return;
-	}
-	*/
-
 	// When close enough to the player, the enemy will move manually in order not to stop in front of the player.
 	constexpr float manualMovementThreshold = 200.f;
 	if (DistanceToPlayer() <= manualMovementThreshold)
@@ -183,7 +186,6 @@ void AAmoebaAIController::ChaseMode()
 
 	if (DistanceToPlayer() <= characterReference->hitRange)
 	{
-		GetWorldTimerManager().ClearTimer(intervalCallSafetyTimerHandle);
 		StopMovement();
 		characterReference->Hit(playerReference);
 	}

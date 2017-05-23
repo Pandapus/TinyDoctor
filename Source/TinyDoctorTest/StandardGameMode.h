@@ -23,6 +23,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 		void GameOver();
 
+	// Call to win the game
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 		void GameWon();
 	

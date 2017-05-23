@@ -23,8 +23,8 @@ bool ABoss::TakeDamageWithKnockback(const float amount, const FVector damageOrig
 		else
 			return false;
 	}
-
-	return false;
+	else
+		return false;
 }
 
 void ABoss::Activate_Implementation() {}

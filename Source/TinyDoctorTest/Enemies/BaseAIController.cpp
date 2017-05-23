@@ -3,7 +3,7 @@
 #include "TinyDoctorTest.h"
 #include "BaseAIController.h"
 
-// Defines the static pointer. (Assigns the memory adress).
+// Assigns memory for the static pointer.
 AActor* ABaseAIController::playerReference;
 
 ABaseAIController::ABaseAIController()
@@ -24,8 +24,6 @@ void ABaseAIController::BeginPlay()
 void ABaseAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	AI();
 }
 
 void ABaseAIController::SetCharacterReference()
@@ -37,23 +35,6 @@ void ABaseAIController::SetCharacterReference()
 			originalPosition = characterReference->GetActorLocation();
 	}
 }
-
-void ABaseAIController::AI()
-{
-	switch (aiMode)
-	{
-	case AIMode::Patrol:
-		PatrolMode();
-		break;
-	case AIMode::Chase:
-		ChaseMode();
-		break;
-	}
-}
-
-void ABaseAIController::PatrolMode() {}
-
-void ABaseAIController::ChaseMode() {}
 
 const FVector ABaseAIController::GetVectorToPlayer()
 {

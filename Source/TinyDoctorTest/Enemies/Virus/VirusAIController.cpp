@@ -13,6 +13,8 @@ void AVirusAIController::BeginPlay()
 void AVirusAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	AI();
 }
 
 void AVirusAIController::SetCharacterReference()
@@ -30,7 +32,20 @@ void AVirusAIController::RemoveSelfFromSpawnerArray()
 		spawnerReference->RemoveItemFromArray(this);
 }
 
-void AVirusAIController::PatrolMode()
+void AVirusAIController::AI()
+{
+	switch (aiMode)
+	{
+		case AIMode::Wait:
+			WaitMode();
+			break;
+		case AIMode::Chase:
+			ChaseMode();
+			break;
+	}
+}
+
+void AVirusAIController::WaitMode()
 {
 	if (DistanceToPlayer() <= characterReference->detectionRadius)
 	{
@@ -42,14 +57,13 @@ void AVirusAIController::StartChaseMode()
 {
 	aiMode = AIMode::Chase;
 	MoveToPlayer();
-
-	constexpr float moveToPlayerCallInterval = 3.f;
-	GetWorldTimerManager().SetTimer(timerMoveToPlayerManager, this, &AVirusAIController::MoveToPlayer, moveToPlayerCallInterval, true);
 }
 
 void AVirusAIController::ChaseMode()
 {
-	constexpr float manualMovementDistanceThreshold = 500.f;
+	// Manually move towards player when within distance.
+	// This stops the unit from stopping before hitting the player.
+	constexpr float manualMovementDistanceThreshold = 200.f;
 	if (DistanceToPlayer() <= manualMovementDistanceThreshold)
 		characterReference->AddMovementInput(GetVectorToPlayer());
 
@@ -63,6 +77,7 @@ void AVirusAIController::ChaseMode()
 		direction.Y *= characterReference->horizontalJumpStrength;
 		direction.Z = characterReference->verticalJumpStrength;
 
+		StopMovement();
 		characterReference->LaunchCharacter(direction, true, true);
 	}
 		

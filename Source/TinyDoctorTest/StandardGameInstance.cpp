@@ -5,6 +5,8 @@
 
 void UStandardGameInstance::SetPlayerStats(float &health, float &maxHealth, int &ammo, int &maxAmmo)
 {
+	// If bRememberStats is true, the player will read stats.
+	// If not it will set the stats.
 	if (bRememberStats == true)
 	{
 		health = savedHealth;

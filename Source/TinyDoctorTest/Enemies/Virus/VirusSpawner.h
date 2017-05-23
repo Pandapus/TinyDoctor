@@ -25,7 +25,7 @@ private:
 	void SpawnVirus();
 
 	TArray<AVirusAIController*> virusArray;
-	void RemoveItemFromArray(AVirusAIController* itemToRemove);
+	void RemoveItemFromArray(AVirusAIController* const &itemToRemove);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Required variables")

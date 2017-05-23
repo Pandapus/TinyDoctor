@@ -29,20 +29,28 @@ private:
 	//
 	// Methods that control the AI
 	//
-
 	
 	FTimerHandle waitingTimerHandle;
 	FTimerHandle intervalCallSafetyTimerHandle;
 
+	enum class AIMode {
+		Patrol,
+		Chase
+	};
+
+	AIMode aiMode = AIMode::Patrol;
+
+	void AI();
+
 	// Patrol Mode
 	void StartPatrolMode();
-	virtual void PatrolMode() override;
+	void PatrolMode();
 	void Roaming();
 	void PickNewRoamingTargetAndMoveThere();
 	bool CanEnemySeePlayer();
 
 	// Chase Mode
-	virtual void ChaseMode() override;
+	void ChaseMode();
 
 public:
 	UFUNCTION(BlueprintCallable)

@@ -6,10 +6,13 @@
 #include "PlayerCharacter.h"
 #include "StandardGameMode.h"
 
+// Holds reference to the ACharacter the class is controlling.
 APlayerCharacter* playerReference;
 
+// Decides how much you need to move the Gamepad stick to activate the gamepad.
 constexpr float gamepadActivateThreshold = 0.25f;
 FVector gamepadAimDirection = FVector::ZeroVector;
+// Holds the position of the mousecursor. Tests if the mouse has moved to see whether to activate mouse-aiming.
 FVector previousMousePosition = FVector::ZeroVector;
 
 APlayerCharacterController::APlayerCharacterController()
@@ -48,7 +51,7 @@ void APlayerCharacterController::BeginPlay()
 
 void APlayerCharacterController::Tick(float DeltaTime)
 {
-	if (bUsingGamepad && CheckForMouseMovement())
+	if (bUsingGamepad && CheckForMouseMovement() == true)
 	{
 		bUsingGamepad = false;
 		bShowMouseCursor = true;
@@ -102,7 +105,7 @@ const bool APlayerCharacterController::CheckForMouseMovement()
 {
 	FVector currentMousePosition;
 	GetMousePosition(currentMousePosition.X, currentMousePosition.Y);
-	if (currentMousePosition.X != previousMousePosition.X || currentMousePosition.Y != currentMousePosition.Y)
+	if (currentMousePosition != previousMousePosition)
 		return true;
 	return false;
 }
@@ -117,6 +120,7 @@ void APlayerCharacterController::OrientTowardsCursor()
 		// Calculates the vector between the actor and the point of impact caused by the ray-trace
 		FVector targetVector = Hit.ImpactPoint - playerReference->GetActorLocation();
 
+		// Rotates the player accordingly.
 		ControlRotation.Yaw = targetVector.Rotation().Yaw;
 	}
 }
@@ -129,11 +133,7 @@ void APlayerCharacterController::GamepadAimForward(const float value)
 	{
 		// Checks whether to activate controller-aiming
 		if (value >= gamepadActivateThreshold)
-		{
-			bUsingGamepad = true;
-			GetMousePosition(previousMousePosition.X, previousMousePosition.Y);
-			bShowMouseCursor = false;
-		}
+			ActivateGamepad();
 	}
 }
 
@@ -145,17 +145,22 @@ void APlayerCharacterController::GamepadAimRight(const float value)
 	{
 		// Checks whether to activate controller-aiming
 		if (value >= gamepadActivateThreshold)
-		{
-			bUsingGamepad = true;
-			GetMousePosition(previousMousePosition.X, previousMousePosition.Y);
-			bShowMouseCursor = false;
-		}
+			ActivateGamepad();
 	}
+}
+
+void APlayerCharacterController::ActivateGamepad()
+{
+	bUsingGamepad = true;
+	GetMousePosition(previousMousePosition.X, previousMousePosition.Y);
+	bShowMouseCursor = false;
 }
 
 void APlayerCharacterController::OrientTowardsGamepadAnalog()
 {
 	constexpr float gamepadDeadzone = 0.5f;
+
+	// Orients the player according to analog and camera-angle
 	if (gamepadAimDirection.Size() >= gamepadDeadzone)
 		ControlRotation.Yaw = gamepadAimDirection.Rotation().Yaw + 90.f + playerReference->springArm->GetComponentRotation().Yaw;
 }

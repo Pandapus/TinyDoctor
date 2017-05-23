@@ -17,6 +17,20 @@ void AVirus::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void AVirus::Falling()
+{
+	Super::Falling();
+
+	GetController()->StopMovement();
+}
+
+void AVirus::Landed(const FHitResult &Hit)
+{
+	Super::Landed(Hit);
+
+	Cast<AVirusAIController>(GetController())->MoveToPlayer();
+}
+
 bool AVirus::TakeDamageWithKnockback(const float amount, const FVector damageOrigin, const float horizontalKnockback, const float verticalKnockback)
 {
 	Destroy();

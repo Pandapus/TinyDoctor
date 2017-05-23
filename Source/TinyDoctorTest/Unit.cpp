@@ -37,6 +37,7 @@ bool AUnit::TakeDamageWithKnockback(const float amount, const FVector damageOrig
 	{
 		if (ChangeHealth(-amount) == false)
 		{
+			// Pushes the unit up and away from damageOrigin.
 			FVector pushVector = FVector(GetActorLocation() - damageOrigin);
 			pushVector.Z = 0.f;
 			pushVector.Normalize();

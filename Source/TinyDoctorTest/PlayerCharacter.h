@@ -52,7 +52,8 @@ protected:
 	virtual void BeginPlay() override;
 	// Called every frames
 	virtual void Tick(float DeltaTime) override;
-
+	
+	// Calls upon Blueprint-version of the shotgun.
 	UFUNCTION(BlueprintNativeEvent)
 		void ShootShotgun();
 
@@ -61,6 +62,7 @@ public:
 	virtual bool TakeDamageWithKnockback(const float amount, const FVector damageOrigin,
 										 const float horizontalKnockback, const float verticalKnockback) override;
 
+	// Calls upon Blueprint version. This sends information to the HUD that the weapon has been changed.
 	UFUNCTION(BlueprintNativeEvent)
 		void WeaponChangeEvent();
 

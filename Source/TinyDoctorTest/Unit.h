@@ -32,6 +32,7 @@ protected:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// Controls whether the unit is invulnerable.
 	bool bInvulnerable = false;
 	UFUNCTION(BlueprintPure)
 		const bool IsInvulnerable();

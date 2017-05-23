@@ -92,7 +92,7 @@ void APlayerCharacter::ShootRifle()
 	FVector direction = GetActorForwardVector();
 	FVector position = GetActorLocation() + (direction * SpawnOffset);
 
-	AProjectile* projectileReference = GetWorld()->SpawnActor<AProjectile>(projectileToShoot, position, direction.Rotation());
+	AProjectile* projectileRef = GetWorld()->SpawnActor<AProjectile>(projectileToShoot, position, direction.Rotation());
 }
 
 void APlayerCharacter::ShootShotgun_Implementation()

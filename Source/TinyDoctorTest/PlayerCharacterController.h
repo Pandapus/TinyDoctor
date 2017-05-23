@@ -38,9 +38,11 @@ private:
 	bool bUsingGamepad = false;
 	void GamepadAimForward(const float value);
 	void GamepadAimRight(const float value);
+	void ActivateGamepad();
 	void OrientTowardsGamepadAnalog();
 
 	// Cursor-oriented aiming
+	// Checks for mouse movement. Returns true if the mouse has been moved this tick.
 	const bool CheckForMouseMovement();
 	void OrientTowardsCursor();
 	

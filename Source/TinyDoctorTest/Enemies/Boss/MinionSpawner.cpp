@@ -18,6 +18,7 @@ void AMinionSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// Adds itself to the boss' minionSpawner-array.
 	Cast<ABossAIController>(bossReference->GetController())->spawners.Add(this);
 }
 
@@ -29,6 +30,6 @@ void AMinionSpawner::Tick(float DeltaTime)
 
 void AMinionSpawner::StartSpawning_Implementation(const int amountToSpawn)
 {
-	// Insert warning
+	// Not designed to use C++. Use Blueprint-derived version.
 }
 

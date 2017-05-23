@@ -25,6 +25,9 @@ protected:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void Falling() override;
+	virtual void Landed(const FHitResult &Hit) override;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")
 		float jumpDistanceThreshold = 500.f;
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")

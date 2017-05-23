@@ -18,6 +18,7 @@ private:
 	void SetPlayerStats(float &playerHealth, float &playerMaxHealth, int &playerAmmo, int &playerMaxAmmo);
 
 protected:
+	// Controls whether the player should have it's stats be saved across levels. This gets set to true the first time the player spawns.
 	UPROPERTY(BlueprintReadWrite)
 		bool bRememberStats = false;
 

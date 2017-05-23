@@ -7,6 +7,8 @@
 #include "Enemies/BaseAIController.h"
 #include "VirusAIController.generated.h"
 
+class AVirusSpawner;
+
 /**
  * 
  */
@@ -16,22 +18,31 @@ class TINYDOCTORTEST_API AVirusAIController : public ABaseAIController
 	GENERATED_BODY()
 
 private:
+	// Reference to the actor it is controlling.
 	AVirus* characterReference;
 	virtual void SetCharacterReference() override;
 
-	class AVirusSpawner* spawnerReference;
+	// Reference to the actor the Virus was spawned by.
+	AVirusSpawner* spawnerReference;
 	void RemoveSelfFromSpawnerArray();
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	
-	virtual void PatrolMode() override;
-	FTimerHandle timerMoveToPlayerManager;
+	enum class AIMode {
+		Wait,
+		Chase
+	};
+
+	AIMode aiMode = AIMode::Wait;
+
+	void AI();
+	void WaitMode();
 	void StartChaseMode();
-	virtual void ChaseMode() override;
+	void ChaseMode();
 
 public:
-	friend class AVirusSpawner;
-	friend class AVirus;
+	friend AVirusSpawner;
+	friend AVirus;
 	
 };

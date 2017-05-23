@@ -21,7 +21,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-	// Holds reference to the player's actor
+	// Holds reference to player1
 	static AActor* playerReference;
 
 	// Reference to the character the AIController is controlling.
@@ -38,18 +38,6 @@ protected:
 	// Calculates distance from enemy to player
 	UFUNCTION(BlueprintPure)
 		const float DistanceToPlayer();
-
-	enum class AIMode {
-		Patrol,
-		Chase
-	};
-
-	AIMode aiMode = AIMode::Patrol;
-
-	// Switch that calls correct method depending on aiMode
-	virtual void AI();
-	virtual void PatrolMode();
-	virtual void ChaseMode();
 
 	// Moves characterReference to playerReference's position.
 	void MoveToPlayer();
